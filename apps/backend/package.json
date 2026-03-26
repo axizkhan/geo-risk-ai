@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:*",
+    "@repo/agent": "workspace:*",
+    "@repo/db": "workspace:*"
+  }
+}
