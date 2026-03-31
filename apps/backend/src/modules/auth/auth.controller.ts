@@ -1,0 +1,73 @@
+import { Request, Response, NextFunction } from "express";
+import {
+  loginService,
+  logoutService,
+  signupService,
+  verifyService,
+} from "./auth.service";
+import { env } from "@repo/shared";
+import { AuthenicatedRequest } from "../../types/authRequest";
+
+export const signupController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.validatedData) {
+    const data = req.validatedData;
+
+    const result = await signupService(data);
+
+    const verifyUrl = `${env.BACKEND_URL}/auth/verify?verifyToken:${result.verifyToken}`;
+
+    res.status(200);
+    res.json({ verifyUrl });
+  }
+
+  throw new Error("Internal Server Error");
+};
+
+export const verifyController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.validatedData) {
+    const data = req.validatedData;
+
+    const verifyResponseData = await verifyService(data);
+
+    res.status(200);
+    res.json({ verifyResponseData });
+  }
+
+  throw new Error("Internal server error");
+};
+
+export const loginController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.validatedData) {
+    const data = req.validatedData;
+
+    const loginResponseData = await loginService(data);
+
+    res.status(200);
+    res.json(loginResponseData);
+  }
+};
+
+export const logoutController = async (
+  req: AuthenicatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const data = req.user;
+
+  const logOutResponse = await logoutService(data);
+
+  res.status(200);
+  res.json({ message: logOutResponse });
+};
