@@ -7,26 +7,27 @@ import {
   verifyController,
 } from "../modules/auth/auth.controller";
 import { authMiddleware } from "../middleware/authorization";
+import { logoutUser } from "@repo/core";
 
 const authRouter = Router();
 
 authRouter.post(
   "/signup",
-  reqValidatorFunc(signupSchema, "body"),
+  reqValidatorFunc({ body: signupSchema }),
   signupController,
 );
 authRouter.post(
   "/verify",
-  reqValidatorFunc(verifySchema, "query"),
+  reqValidatorFunc({ query: verifySchema }),
   verifyController,
 );
 
 authRouter.post(
   "/login",
-  reqValidatorFunc(loginSchema, "body"),
+  reqValidatorFunc({ body: loginSchema }),
   loginController,
 );
 
-authRouter.post("/logout", authMiddleware);
+authRouter.post("/logout", authMiddleware, logoutUser);
 
 export default authRouter;

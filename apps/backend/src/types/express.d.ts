@@ -1,8 +1,18 @@
 import { Request } from "express";
+import * as z from "zod";
 
-import { loginSchema, signupSchema, verifySchema } from "@repo/shared";
+import {
+  loginSchema,
+  providerCreationSchema,
+  signupSchema,
+  verifySchema,
+} from "@repo/shared";
 
-type validatedDate = loginSchema | signupSchema | verifySchema;
+type validatedDate =
+  | loginSchema
+  | signupSchema
+  | verifySchema
+  | z.infer<typeof providerCreationSchema>;
 
 interface user {
   email: string;
@@ -14,10 +24,12 @@ interface user {
 declare global {
   namespace Express {
     interface Request {
-      validatedData?: validatedDate;
+      validatedData?: {
+        body?: any;
+        query?: any;
+        params?: any;
+      };
       user?: user;
-    }
-    interface Response {
       payload?: {
         code: number;
         statusCode: string;

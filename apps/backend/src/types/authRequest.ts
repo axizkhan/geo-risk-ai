@@ -1,5 +1,29 @@
 import { Request, Response } from "express";
-import { loginSchema, signupSchema, verifySchema } from "@repo/shared";
+import * as z from "zod";
+import {
+  loginSchema,
+  provideConfigUpdateSchema,
+  providerCreationSchema,
+  providerToggleParamsSchema,
+  providerToggleQuerySchema,
+  signupSchema,
+  verifySchema,
+} from "@repo/shared";
+
+type ValidationValueType =
+  | z.infer<typeof loginSchema>
+  | z.infer<typeof signupSchema>
+  | z.infer<typeof verifySchema>
+  | z.infer<typeof providerCreationSchema>
+  | z.infer<typeof provideConfigUpdateSchema>
+  | z.infer<typeof providerToggleParamsSchema>
+  | z.infer<typeof providerToggleQuerySchema>;
+
+export type ValidateDataType = {
+  body?: ValidationValueType;
+  query?: ValidationValueType;
+  params?: ValidationValueType;
+};
 
 export interface AuthenicatedRequest extends Request {
   user: {
@@ -11,7 +35,7 @@ export interface AuthenicatedRequest extends Request {
 }
 
 export interface ValidateRequest extends Request {
-  validatedData: typeof loginSchema | typeof signupSchema | typeof verifySchema;
+  validatedData: ValidateDataType;
 }
 
 export interface ValidatedAndAuthenticateRequest extends Request {
@@ -21,14 +45,27 @@ export interface ValidatedAndAuthenticateRequest extends Request {
     token: string;
     tokenVersion: number;
   };
-  validatedData: typeof loginSchema | typeof signupSchema | typeof verifySchema;
+  validatedData: ValidateDataType;
 }
 
-export interface ResponseWithPayload extends Response {
+export interface RequestWithPayload extends Request {
   payload: {
     code: number;
     data: any;
     statusCode: string;
     message: string;
+  };
+}
+
+export interface UpdateConfigRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    body: z.infer<typeof provideConfigUpdateSchema>;
+  };
+}
+
+export interface ToggleConfigRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    params: z.infer<typeof providerToggleParamsSchema>;
+    query: z.infer<typeof providerToggleQuerySchema>;
   };
 }

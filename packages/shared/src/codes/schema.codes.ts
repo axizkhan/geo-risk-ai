@@ -1,0 +1,3 @@
+export const VALIDATION_ERROR = {
+  SCHEMA_VALIDATION: "SCHEMA_VALIDATION_ERROR",
+} as const;

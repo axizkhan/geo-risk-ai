@@ -6,3 +6,6 @@ export * from "./queries/user.queries.js";
 
 /**verify queries */
 export * from "./queries/verify.queries.js";
+
+/**provider queries */
+export * from "./queries/provider.queries.js";

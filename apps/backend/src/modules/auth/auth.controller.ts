@@ -14,7 +14,7 @@ export const signupController = async (
   next: NextFunction,
 ) => {
   if (req.validatedData) {
-    const data = req.validatedData;
+    const data = req.validatedData.body;
 
     const result = await signupService(data);
 
@@ -33,7 +33,7 @@ export const verifyController = async (
   next: NextFunction,
 ) => {
   if (req.validatedData) {
-    const data = req.validatedData;
+    const data = req.validatedData.query;
 
     const verifyResponseData = await verifyService(data);
 
@@ -50,7 +50,7 @@ export const loginController = async (
   next: NextFunction,
 ) => {
   if (req.validatedData) {
-    const data = req.validatedData;
+    const data = req.validatedData.body;
 
     const loginResponseData = await loginService(data);
 

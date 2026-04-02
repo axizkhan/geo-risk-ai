@@ -1,4 +1,4 @@
-import { AUTH_CODE } from "../codes/auth.codes";
+import { AUTH_SUCCESS_CODE } from "../codes/auth.codes";
 
 export const AUTH_RESPONSES = {
   LOGIN_SUCCESS: {

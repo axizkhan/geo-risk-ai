@@ -1,16 +1,22 @@
-import { NextFunction, Request } from "express";
-import { ResponseWithPayload } from "../types/authRequest";
+import { NextFunction, Response } from "express";
+import { RequestWithPayload } from "../types/authRequest";
 
 export const responseSender = (
-  req: Request,
-  res: ResponseWithPayload,
+  req: RequestWithPayload,
+  res: Response,
   next: NextFunction,
 ) => {
-  res.status(res.payload.code);
-  res.json({
+  if (!req.payload) {
+    return next();
+  }
+
+  const { code, statusCode, data, message } = req.payload;
+
+  res.status(code);
+  return res.json({
+    statusCode,
+    message,
+    data,
     success: true,
-    statusCode: res.payload.statusCode,
-    data: res.payload.data,
-    message: res.payload.message,
   });
 };

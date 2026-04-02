@@ -1,35 +1,44 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodType } from "zod";
 
-type fieldCheck = "body" | "params" | "query";
+type ValidationSchema = {
+  body?: ZodType;
+  params?: ZodType;
+  query?: ZodType;
+};
 
-export function reqValidatorFunc(
-  schema: ZodType,
-  fieldCheck: fieldCheck = "body",
-) {
+export function reqValidatorFunc(schema: ValidationSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
     // const result = schema.safeParse(req.body);
 
     let result;
 
-    switch (fieldCheck) {
-      case "body":
-        result = schema.safeParse(req.body);
-        break;
-      case "params":
-        result = schema.safeParse(req.params);
-        break;
-      case "query":
-        result = schema.safeParse(req.query);
-        break;
-    }
+    for (let field in schema) {
+      switch (field) {
+        case "body":
+          result = schema[field]?.safeParse(req.body);
 
-    if (!result.success) {
-      return res.status(400).json({
-        error: result.error.issues,
-      });
+          break;
+        case "params":
+          result = schema[field]?.safeParse(req.params);
+          break;
+        case "query":
+          result = schema[field]?.safeParse(req.query);
+          break;
+      }
+
+      if (result) {
+        if (!result.success) {
+          return res.status(400).json({
+            error: result.error.issues,
+          });
+        }
+        // @ts-ignore
+        req.validatedData[field] = result.data;
+        continue;
+      }
+      throw new Error("Error occure in validation");
     }
-    req.validatedData = result.data;
 
     next();
   };
