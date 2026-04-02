@@ -1,4 +1,7 @@
-import { findProviderByProviderIdAndUserId } from "@repo/db";
+import {
+  findProviderByProviderIdAndUserId,
+  toggleProviderById,
+} from "@repo/db";
 
 export async function toggleProvider({
   providerId,
@@ -9,14 +12,34 @@ export async function toggleProvider({
   providerId: string;
   isActive: boolean;
 }) {
-  const providerDocument = await findProviderByProviderIdAndUserId(
-    providerId,
-    userId,
-  );
+  try {
+    const providerDocument = await findProviderByProviderIdAndUserId(
+      providerId,
+      userId,
+    );
 
-  if (!providerDocument) {
-    throw new Error("provider document don't exist");
+    if (!providerDocument) {
+      throw new Error("provider document don't exist");
+    }
+
+    const toggleDocument = await toggleProviderById(providerId, isActive);
+
+    if (toggleDocument.matchedCount === 0) {
+      throw new Error("Provider not found");
+    }
+
+    if (toggleDocument.modifiedCount === 0) {
+      return {
+        success: true,
+        message: "No change needed (already in desired state)",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Provider toggled successfully",
+    };
+  } catch (err) {
+    throw err;
   }
-
-  const toggleDocument = await toggleDocumentById(providerId, isActive);
 }

@@ -4,6 +4,7 @@ import { reqValidatorFunc } from "../middleware/validation";
 import {
   provideConfigUpdateSchema,
   providerCreationSchema,
+  providerDeleteQuerySchema,
   providerToggleParamsSchema,
   providerToggleQuerySchema,
 } from "@repo/shared";
@@ -32,6 +33,11 @@ providerRouter.patch(
     query: providerToggleQuerySchema,
     params: providerToggleParamsSchema,
   }),
+);
+providerRouter.delete(
+  "/:id",
+  authMiddleware,
+  reqValidatorFunc({ query: providerDeleteQuerySchema }),
 );
 
 export { providerRouter };

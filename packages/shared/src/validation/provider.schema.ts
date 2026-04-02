@@ -26,3 +26,7 @@ export const providerToggleParamsSchema = z.object({
 export const providerToggleQuerySchema = z.object({
   isActive: z.boolean(),
 });
+
+export const providerDeleteQuerySchema = z.object({
+  id: z.string(),
+});

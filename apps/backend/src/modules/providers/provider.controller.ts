@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  DeleteConfigRequest,
   ToggleConfigRequest,
   UpdateConfigRequest,
   ValidatedAndAuthenticateRequest,
-  ValidateRequest,
 } from "../../types/authRequest";
 import {
   createProviderService,
+  deleteProviderService,
   getAllProviderService,
   toggleProviderService,
   updateProviderConfigService,
 } from "./provider.service";
-import { providerCreationDTO } from "@repo/shared";
 
 export const providerCreateController = async (
   req: Request,
@@ -91,4 +91,22 @@ export const toggleProvider = async (
   const isActive = Boolean(authReq.validatedData.query.isActive);
 
   const result = await toggleProviderService({ userId, providerId, isActive });
+
+  res.status(200);
+  res.json(result);
+};
+
+export const deleteProvider = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authNValidReq = req as DeleteConfigRequest;
+  const userId = authNValidReq.user.id;
+  const providerId = authNValidReq.validatedData.params.id;
+
+  const result = await deleteProviderService({ userId, providerId });
+
+  res.status(200);
+  res.json(result);
 };

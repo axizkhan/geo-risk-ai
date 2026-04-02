@@ -4,6 +4,7 @@ import {
   loginSchema,
   provideConfigUpdateSchema,
   providerCreationSchema,
+  providerDeleteQuerySchema,
   providerToggleParamsSchema,
   providerToggleQuerySchema,
   signupSchema,
@@ -17,7 +18,8 @@ type ValidationValueType =
   | z.infer<typeof providerCreationSchema>
   | z.infer<typeof provideConfigUpdateSchema>
   | z.infer<typeof providerToggleParamsSchema>
-  | z.infer<typeof providerToggleQuerySchema>;
+  | z.infer<typeof providerToggleQuerySchema>
+  | z.infer<typeof providerDeleteQuerySchema>;
 
 export type ValidateDataType = {
   body?: ValidationValueType;
@@ -67,5 +69,11 @@ export interface ToggleConfigRequest extends ValidatedAndAuthenticateRequest {
   validatedData: {
     params: z.infer<typeof providerToggleParamsSchema>;
     query: z.infer<typeof providerToggleQuerySchema>;
+  };
+}
+
+export interface DeleteConfigRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    params: z.infer<typeof providerDeleteQuerySchema>;
   };
 }

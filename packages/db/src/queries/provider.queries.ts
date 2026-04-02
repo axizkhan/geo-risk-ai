@@ -42,12 +42,29 @@ export const updateProviderConfigById = async (
   );
 };
 
-export const toggleProviderById = async (_id: string, isActive: boolean) => {
+export const toggleProviderById = async (
+  _id: string,
+  isActive: boolean,
+): Promise<mongoose.UpdateResult> => {
   try {
     return await ProviderModel.updateOne(
       { _id },
       { $set: { isEnable: isActive } },
     );
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteDocumentByProviderIdAndUserId = async ({
+  providerId,
+  userId,
+}: {
+  providerId: string;
+  userId: string;
+}): Promise<mongoose.DeleteResult> => {
+  try {
+    return await ProviderModel.deleteOne({ _id: providerId, userId });
   } catch (err) {
     throw err;
   }
