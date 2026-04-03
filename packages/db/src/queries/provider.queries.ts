@@ -69,3 +69,14 @@ export const deleteDocumentByProviderIdAndUserId = async ({
     throw err;
   }
 };
+
+export const findAllProviderByUserId = async (
+  userId: string,
+): Promise<Array<mongoose.InferRawDocType<IProvider>> | null> => {
+  return ProviderModel.find({
+    userId: new mongoose.Schema.Types.ObjectId(userId),
+    isEnable: true,
+  })
+    .lean()
+    .sort({ type: 1 });
+};

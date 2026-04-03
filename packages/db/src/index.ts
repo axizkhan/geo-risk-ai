@@ -9,3 +9,6 @@ export * from "./queries/verify.queries.js";
 
 /**provider queries */
 export * from "./queries/provider.queries.js";
+
+/**apiKey queries */
+export * from "./queries/apiKey.queries.js";

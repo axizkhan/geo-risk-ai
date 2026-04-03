@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as z from "zod";
 import {
+  apiKeyCreationSchems,
   loginSchema,
   provideConfigUpdateSchema,
   providerCreationSchema,
@@ -19,7 +20,8 @@ type ValidationValueType =
   | z.infer<typeof provideConfigUpdateSchema>
   | z.infer<typeof providerToggleParamsSchema>
   | z.infer<typeof providerToggleQuerySchema>
-  | z.infer<typeof providerDeleteQuerySchema>;
+  | z.infer<typeof providerDeleteQuerySchema>
+  | z.infer<typeof apiKeyCreationSchems>;
 
 export type ValidateDataType = {
   body?: ValidationValueType;
@@ -75,5 +77,11 @@ export interface ToggleConfigRequest extends ValidatedAndAuthenticateRequest {
 export interface DeleteConfigRequest extends ValidatedAndAuthenticateRequest {
   validatedData: {
     params: z.infer<typeof providerDeleteQuerySchema>;
+  };
+}
+
+export interface ApiKeyCreationRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    body: z.infer<typeof apiKeyCreationSchems>;
   };
 }

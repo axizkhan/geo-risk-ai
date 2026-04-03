@@ -8,7 +8,7 @@ import {
 import mongoose from "mongoose";
 
 export type IProvider = {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: mongoose.Schema.Types.ObjectId | string;
   userId: mongoose.Schema.Types.ObjectId | string;
   type: ChannelType;
   provider_name: ProviderName;
@@ -53,6 +53,7 @@ const providerSchema = new mongoose.Schema<IProvider>({
 providerSchema.index({ userId: 1, provider_name: 1 });
 providerSchema.index({ userId: 1, type: 1 });
 providerSchema.index({ userId: 1, type: 1, provider_name: 1 });
+providerSchema.index({ userId: 1, isEnable: 1 });
 
 export const ProviderModel = mongoose.model<IProvider>(
   "Provider",
