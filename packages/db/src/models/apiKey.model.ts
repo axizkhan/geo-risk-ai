@@ -15,8 +15,6 @@ export type IApiKey = {
   };
   name: string;
   lastUsedAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
 const apiKeySchema = new mongoose.Schema<IApiKey>(
@@ -24,6 +22,7 @@ const apiKeySchema = new mongoose.Schema<IApiKey>(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      index: true,
     },
     keyHash: {
       type: String,
