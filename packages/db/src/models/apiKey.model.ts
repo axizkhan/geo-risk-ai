@@ -1,4 +1,4 @@
-import { ChannelType, channelTypeSchema } from "@repo/shared";
+import { ApiKeyAction, ChannelType, channelTypeSchema } from "@repo/shared";
 import mongoose, { mongo } from "mongoose";
 import { channel } from "node:diagnostics_channel";
 import { permission } from "node:process";
@@ -11,12 +11,10 @@ export type IApiKey = {
   keyHash: string;
   permissions: {
     channel: Array<ChannelType>;
-    actions: Array<"single" | "bulk">;
+    actions: Array<ApiKeyAction>;
   };
   name: string;
   lastUsedAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
 const apiKeySchema = new mongoose.Schema<IApiKey>(
@@ -24,6 +22,7 @@ const apiKeySchema = new mongoose.Schema<IApiKey>(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      index: true,
     },
     keyHash: {
       type: String,

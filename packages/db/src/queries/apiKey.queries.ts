@@ -1,7 +1,7 @@
-import { ChannelType } from "@repo/shared";
+import { ApiKeyAction, ChannelType } from "@repo/shared";
 import { ApiKeyModel } from "../models/apiKey.model";
 import { IApiKey } from "../models/apiKey.model";
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument, InferRawDocType } from "mongoose";
 
 export const createApiKeyDoc = async ({
   userId,
@@ -25,6 +25,40 @@ export const createApiKeyDoc = async ({
       name,
       keyHash,
       permissions,
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getAllApiKeyByUserId = async (
+  userId: string,
+): Promise<IApiKey[]> => {
+  try {
+    return await ApiKeyModel.find({ userId }).lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteApiKeyById = async (
+  _id: string,
+): Promise<mongoose.DeleteResult> => {
+  try {
+    return await ApiKeyModel.deleteOne({ _id });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const findApiKeyByToken = async ({
+  hashedKey,
+}: {
+  hashedKey: string;
+}): Promise<HydratedDocument<IApiKey> | null> => {
+  try {
+    return ApiKeyModel.findOne({
+      keyHash: hashedKey,
     });
   } catch (err) {
     throw err;
