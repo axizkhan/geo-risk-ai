@@ -1,7 +1,7 @@
-import { EncryptedProviderConfig } from "@repo/shared";
+import { ChannelType, EncryptedProviderConfig } from "@repo/shared";
 import { IProvider, ProviderModel } from "../models/provider.model";
 import { providerCreateDoc } from "../types/provider.types";
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 
 export const createProviderDoc = async (data: providerCreateDoc) => {
   try {
@@ -79,4 +79,18 @@ export const findAllProviderByUserId = async (
   })
     .lean()
     .sort({ type: 1 });
+};
+
+export const findProviderForJob = async ({
+  userId,
+  type,
+}: {
+  userId: string;
+  type: ChannelType;
+}): Promise<HydratedDocument<IProvider> | null> => {
+  try {
+    return await ProviderModel.findOne({ userId, type });
+  } catch (err) {
+    throw err;
+  }
 };

@@ -12,3 +12,11 @@ export * from "./queries/provider.queries.js";
 
 /**apiKey queries */
 export * from "./queries/apiKey.queries.js";
+
+/**message queries */
+export * from "./queries/message.queries.js";
+
+/**delievery queries */
+export * from "./queries/delievery.queries.js";
+
+export * from "./types/delievry.types.js";

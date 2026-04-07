@@ -11,6 +11,7 @@ const env = {
   BACKEND_URL: process.env.BACKEND_URL,
   PROVIDER_ENC_KEY: process.env.PROVIDER_ENC_KEY,
   ENC_ALGORITHM: process.env.ENC_ALGORITHM,
+  MAX_RETRIES: Number(process.env.MAX_RETRIES),
 };
 
 export default env;
