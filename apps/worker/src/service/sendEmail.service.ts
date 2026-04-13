@@ -24,11 +24,14 @@ export const sendEmail = async (job: any) => {
     const message = await findMessageAndStatusToUpd(messageId);
 
     //decrypt the config
+
+    if (!provider.config) {
+      throw new Error("Provider config is not defined");
+    }
     const config = await decrptProvider({
-      configCipher: provider.config.configEnc,
+      configCipher: provider.config.configCipher,
       ivHex: provider.config.iv,
     });
-
     //find delievries for email in batch till their is no email
     //loop true
     while (true) {

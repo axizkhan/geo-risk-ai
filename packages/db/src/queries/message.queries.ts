@@ -132,3 +132,13 @@ export const findMessageDelievryStatus = async (
     throw err;
   }
 };
+
+export const getMessageDetailsId = async (
+  _id: string,
+): Promise<IMessage | null> => {
+  try {
+    return await MessageModel.findById(_id).lean();
+  } catch (err) {
+    throw err;
+  }
+};

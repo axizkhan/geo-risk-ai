@@ -74,7 +74,7 @@ export const findAllProviderByUserId = async (
   userId: string,
 ): Promise<Array<mongoose.InferRawDocType<IProvider>> | null> => {
   return ProviderModel.find({
-    userId: new mongoose.Schema.Types.ObjectId(userId),
+    userId: new mongoose.Types.ObjectId(userId),
     isEnable: true,
   })
     .lean()
@@ -90,6 +90,16 @@ export const findProviderForJob = async ({
 }): Promise<HydratedDocument<IProvider> | null> => {
   try {
     return await ProviderModel.findOne({ userId, type });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getProviderForMessage = async (
+  _id: string,
+): Promise<IProvider | null> => {
+  try {
+    return await ProviderModel.findById(_id).lean();
   } catch (err) {
     throw err;
   }

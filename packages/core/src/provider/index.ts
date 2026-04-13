@@ -5,3 +5,4 @@ export * from "./use-case/toggleProvider.js";
 export * from "./use-case/deleteProvider.js";
 export * from "./use-case/findProvider4Job.js";
 export * from "./use-case/decrpyProviderConfig.js";
+export * from "./use-case/getProvider4Msg.js";

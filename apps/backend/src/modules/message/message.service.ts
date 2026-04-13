@@ -2,10 +2,13 @@ import {
   createNewDelievery,
   createNewMessage,
   findProvider4Job,
+  getProviderForMsg,
   validateApiKey,
 } from "@repo/core";
+import { getMessageDetailsId } from "@repo/db";
 import { publishEmail } from "@repo/queue";
 import { CreateMessageService } from "packages/shared/src/contracts/message.contract";
+import { GetMesssageData, GetMessageResesponse } from "@repo/shared";
 
 export async function createMessageService({
   apiToken,
@@ -51,8 +54,33 @@ export async function createMessageService({
   }
 }
 
-export async function getMessageDetailsService(id: string) {
+export async function getMessageDetailsService(
+  id: string,
+): Promise<GetMessageResesponse> {
   try {
+    const message = await getMessageDetailsId(id);
+    let provider;
+    let data: GetMesssageData | null = null;
+    if (message?.providerId) {
+      provider = await getProviderForMsg(message.providerId.toString());
+      data = {
+        channel: message.channel,
+        content: message.content,
+        status: message.status,
+        totalCount: message.totalCount,
+        successCount: message.successCount,
+        failedCount: message.failedCount,
+        jobStartedAt: message.jobStartedAt,
+        jobEndAt: message.jobEndAt,
+        providerName: provider.provider_name,
+        providerType: provider.type,
+      };
+    }
+    return {
+      success: true,
+      message: "success",
+      data,
+    };
   } catch (err) {
     throw err;
   }

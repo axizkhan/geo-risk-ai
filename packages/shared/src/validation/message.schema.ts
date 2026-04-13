@@ -1,6 +1,7 @@
 import * as z from "zod";
 import { actionSchema } from "./apiKeyschema";
 import { channelTypeSchema } from "./provider.schema";
+import { standeredResSchema } from "./standeredRes.schema";
 
 export const messageStatusSchema = z.enum([
   "pending",
@@ -30,3 +31,18 @@ export const createMessageServiceSchema = z.object({
 export const getMessageParams = z.object({
   id: z.string(),
 });
+
+export const getMessageDataSchema = z.object({
+  content: z.string(),
+  channel: z.string(),
+  status: z.string(),
+  totalCount: z.number(),
+  successCount: z.number(),
+  failedCount: z.number(),
+  jobStartedAt: z.date().nullable().optional(),
+  jobEndAt: z.date().nullable().optional(),
+  providerName: z.string().optional(),
+  providerType: z.string().optional(),
+});
+
+export const getMessageResSchema = standeredResSchema(getMessageDataSchema);

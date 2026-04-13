@@ -3,7 +3,10 @@ import {
   GetMessageRequest,
   MessageCreateRequest,
 } from "../../types/authRequest";
-import { createMessageService } from "./message.service";
+import {
+  createMessageService,
+  getMessageDetailsService,
+} from "./message.service";
 
 export const createMessageController = async (
   req: Request,
@@ -35,4 +38,8 @@ export const getMessageDetails = async (
 ) => {
   const authNValReq = req as GetMessageRequest;
   const { id } = authNValReq.validatedData.params;
+  const result = getMessageDetailsService(id);
+
+  res.status(200);
+  res.json(result);
 };
