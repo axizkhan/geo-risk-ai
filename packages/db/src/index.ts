@@ -20,3 +20,5 @@ export * from "./queries/message.queries.js";
 export * from "./queries/delievery.queries.js";
 
 export * from "./types/delievry.types.js";
+
+export * from "./types/message.types.js";

@@ -5,3 +5,5 @@ export type CreateNewDelievries = Array<{
   providerId: mongoose.Types.ObjectId;
   recipent: string;
 }>;
+
+export type DeliveryStatus = "pending" | "sent" | "failed" | "retry";

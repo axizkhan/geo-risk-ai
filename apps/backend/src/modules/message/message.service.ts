@@ -4,6 +4,7 @@ import {
   findProvider4Job,
   validateApiKey,
 } from "@repo/core";
+import { publishEmail } from "@repo/queue";
 import { CreateMessageService } from "packages/shared/src/contracts/message.contract";
 
 export async function createMessageService({
@@ -41,8 +42,17 @@ export async function createMessageService({
     });
 
     /**we have to push job to queue */
+    await publishEmail({ messageId, type: channel, userId });
 
     /**and send user success message */
+    return { success: true, message: "emails is queue for job " };
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getMessageDetailsService(id: string) {
+  try {
   } catch (err) {
     throw err;
   }

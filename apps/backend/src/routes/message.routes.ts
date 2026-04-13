@@ -4,6 +4,7 @@ import { reqValidatorFunc } from "../middleware/validation";
 import {
   createMessageBodySchema,
   createMessageQuerySchema,
+  getMessageParams,
 } from "@repo/shared";
 import { createMessageController } from "../modules/message/message.controller";
 
@@ -17,6 +18,13 @@ messageRouter.post(
     body: createMessageBodySchema,
   }),
   createMessageController,
+);
+
+messageRouter.get(
+  "/:id",
+  authMiddleware,
+  reqValidatorFunc({ params: getMessageParams }),
+  getMessageDetails,
 );
 
 export { messageRouter };

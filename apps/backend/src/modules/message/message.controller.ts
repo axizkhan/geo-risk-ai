@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { MessageCreateRequest } from "../../types/authRequest";
+import {
+  GetMessageRequest,
+  MessageCreateRequest,
+} from "../../types/authRequest";
 import { createMessageService } from "./message.service";
 
 export const createMessageController = async (
@@ -21,4 +24,15 @@ export const createMessageController = async (
     content,
     userId,
   });
+  res.status(200);
+  res.json(result);
+};
+
+export const getMessageDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authNValReq = req as GetMessageRequest;
+  const { id } = authNValReq.validatedData.params;
 };

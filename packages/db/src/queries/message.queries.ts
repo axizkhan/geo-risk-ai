@@ -1,6 +1,8 @@
 import { ChannelType } from "@repo/shared";
 import { IMessage, MessageModel } from "../models/message.model";
 import mongoose from "mongoose";
+import { retryDelievryAndUpdate } from "./delievery.queries";
+import { MessageStatus } from "../types/message.types";
 
 export const createMessageDocuement = async ({
   content,
@@ -98,6 +100,34 @@ export const findAndUpdateMessageToProcessing = async (_id: string) => {
       },
       { new: true },
     ).lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const findMessageById = async (
+  _id: string,
+): Promise<mongoose.InferRawDocType<IMessage> | null> => {
+  try {
+    return await MessageModel.findByIdAndUpdate(_id, {
+      status: "processing",
+    }).lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const findMessageDelievryStatus = async (
+  _id: string,
+): Promise<MessageStatus | null> => {
+  try {
+    let result = await MessageModel.findOne({ _id }).lean();
+    return result as {
+      _id: mongoose.Schema.Types.ObjectId;
+      totalCount: number;
+      successCount: number;
+      failedCount: number;
+    } | null;
   } catch (err) {
     throw err;
   }

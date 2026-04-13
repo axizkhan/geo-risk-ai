@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { DelieveryModel, IDelievery } from "../models/delievery.model";
 import { IMessage } from "../models/message.model";
-import { CreateNewDelievries } from "@repo/db";
+import { CreateNewDelievries, DeliveryStatus } from "@repo/db";
 
 export const createNewDelieveryDocs = async (
   deliveriesArray: CreateNewDelievries,
 ): Promise<mongoose.Require_id<IDelievery>[]> => {
   try {
-    return await DelieveryModel.insertMany(deliveriesArray, { lean: true });
+    return await DelieveryModel.insertMany(deliveriesArray);
   } catch (err) {
     throw err;
   }
@@ -16,7 +16,7 @@ export const createNewDelieveryDocs = async (
 export const successDelievryAndUpdate = async ({
   _id,
 }: {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
 }): Promise<mongoose.UpdateResult> => {
   try {
     return await DelieveryModel.updateOne(
@@ -35,7 +35,7 @@ export const failedDelievryAndUpdate = async ({
   _id,
   error,
 }: {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   error: string;
 }): Promise<mongoose.UpdateResult> => {
   try {
@@ -55,37 +55,52 @@ export const retryDelievryAndUpdate = async ({
   _id,
   error,
 }: {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   error: string;
-}): Promise<mongoose.UpdateResult> => {
+}): Promise<{
+  _id: mongoose.Schema.Types.ObjectId;
+  status: DeliveryStatus;
+} | null> => {
   try {
-    return await DelieveryModel.updateOne({ _id }, [
-      {
-        $set: {
-          error: error,
-          lastAttemptAt: new Date(),
-          retryCount: { $add: ["$retryCount", 1] },
-        },
-      },
-      {
-        $set: {
-          status: {
-            $cond: {
-              if: { $eq: ["$maxRetries", "$retryCount"] },
-              then: "failed",
-              else: "retry",
-            },
-          },
-          nextRetryAt: {
-            $cond: {
-              if: { $gt: ["$maxRetries", "$retryCount"] },
-              then: new Date(new Date().getTime() + 1000 * 60 * 3),
-              else: "$nextRetryAt",
-            },
+    return await DelieveryModel.findByIdAndUpdate(
+      { _id },
+      [
+        {
+          $set: {
+            error: error,
+            lastAttemptAt: new Date(),
           },
         },
-      },
-    ]);
+        {
+          $set: {
+            newRetryCount: { $add: ["$retryCount", 1] },
+          },
+        },
+        {
+          $set: {
+            retryCount: "$newRetryCount",
+            status: {
+              $cond: {
+                if: { $eq: ["$maxRetries", "$newRetryCount"] },
+                then: "failed",
+                else: "retry",
+              },
+            },
+            nextRetryAt: {
+              $cond: {
+                if: { $gt: ["$maxRetries", "$newRetryCount"] },
+                then: new Date(new Date().getTime() + 1000 * 60 * 3),
+                else: "$nextRetryAt",
+              },
+            },
+          },
+        },
+        {
+          $unset: "newRetryCount",
+        },
+      ],
+      { new: true, projection: { status: 1 } },
+    );
   } catch (err) {
     throw err;
   }

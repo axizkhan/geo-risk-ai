@@ -26,3 +26,7 @@ export const createMessageServiceSchema = z.object({
   ...createMessageQuerySchema.shape,
   userId: z.string(),
 });
+
+export const getMessageParams = z.object({
+  id: z.string(),
+});
