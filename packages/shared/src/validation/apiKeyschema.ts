@@ -15,3 +15,7 @@ export const apiKeyCreationSchems = z.object({
 export const apiKeyCreationServiceSchema = apiKeyCreationSchems.extend({
   userId: z.string(),
 });
+
+export const apiKeyDeletionSchema = z.object({
+  id: z.string(),
+});

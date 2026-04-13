@@ -1,22 +1,8 @@
-import {
-  ChannelType,
-  channelTypeSchema,
-  EncryptedProviderConfig,
-  ProviderName,
-  providerNameSchema,
-} from "@repo/shared";
+import { channelTypeSchema, providerNameSchema } from "@repo/shared";
 import mongoose from "mongoose";
+import { CHANNEL_TYPES, PROVIDER_NAMES } from "../types/message.types";
 
-export type IProvider = {
-  _id: mongoose.Schema.Types.ObjectId | string;
-  userId: mongoose.Schema.Types.ObjectId | string;
-  type: ChannelType;
-  provider_name: ProviderName;
-  isEnable: boolean;
-  config: EncryptedProviderConfig;
-};
-
-const providerSchema = new mongoose.Schema<IProvider>({
+const providerSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -25,12 +11,12 @@ const providerSchema = new mongoose.Schema<IProvider>({
   },
   type: {
     type: String,
-    enum: channelTypeSchema.options,
+    enum: CHANNEL_TYPES,
     required: true,
   },
   provider_name: {
     type: String,
-    enum: providerNameSchema.options,
+    enum: PROVIDER_NAMES,
     required: true,
   },
   isEnable: {
@@ -54,6 +40,8 @@ providerSchema.index({ userId: 1, provider_name: 1 });
 providerSchema.index({ userId: 1, type: 1 });
 providerSchema.index({ userId: 1, type: 1, provider_name: 1 });
 providerSchema.index({ userId: 1, isEnable: 1 });
+
+export type IProvider = mongoose.InferSchemaType<typeof providerSchema>;
 
 export const ProviderModel = mongoose.model<IProvider>(
   "Provider",

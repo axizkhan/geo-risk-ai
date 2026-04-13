@@ -8,7 +8,7 @@ export async function apiKeyCreation(data: ApiKeyCreationService) {
   try {
     const { apiKeyName, permissions, userId } = data;
     const rawApiKey = apiKeyGenerator();
-    const hashApiKey = await hashApiKeyFunc(rawApiKey);
+    const hashApiKey = await hashApiKeyFunc(rawApiKey, userId);
     const allUserProvider = await findAllProviderByUserId(data.userId);
 
     if (!allUserProvider) {
@@ -20,7 +20,7 @@ export async function apiKeyCreation(data: ApiKeyCreationService) {
     const providerForChannel = userRequiredProvider(
       // @ts-ignore
       allProviderType,
-      data.permissions.channel,
+      permissions.channel,
     );
 
     if (providerForChannel.success) {

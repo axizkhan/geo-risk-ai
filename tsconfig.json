@@ -11,7 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "@repo/core": ["packages/core/src"],
-      "@repo/worker": ["packages/worker/src"],
+      "@repo/queue": ["packages/queue/src"],
       "@repo/db": ["packages/db/src"],
       "@repo/provider": ["packages/provider/src"],
       "@repo/shared": ["packages/shared/src"]

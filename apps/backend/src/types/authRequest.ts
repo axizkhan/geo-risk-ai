@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import * as z from "zod";
 import {
   apiKeyCreationSchems,
+  apiKeyDeletionSchema,
+  createMessageBodySchema,
+  createMessageQuerySchema,
   loginSchema,
   provideConfigUpdateSchema,
   providerCreationSchema,
@@ -10,6 +13,7 @@ import {
   providerToggleQuerySchema,
   signupSchema,
   verifySchema,
+  getMessageParams,
 } from "@repo/shared";
 
 type ValidationValueType =
@@ -21,7 +25,11 @@ type ValidationValueType =
   | z.infer<typeof providerToggleParamsSchema>
   | z.infer<typeof providerToggleQuerySchema>
   | z.infer<typeof providerDeleteQuerySchema>
-  | z.infer<typeof apiKeyCreationSchems>;
+  | z.infer<typeof apiKeyCreationSchems>
+  | z.infer<typeof apiKeyDeletionSchema>
+  | z.infer<typeof createMessageBodySchema>
+  | z.infer<typeof createMessageQuerySchema>
+  | z.infer<typeof getMessageParams>;
 
 export type ValidateDataType = {
   body?: ValidationValueType;
@@ -83,5 +91,24 @@ export interface DeleteConfigRequest extends ValidatedAndAuthenticateRequest {
 export interface ApiKeyCreationRequest extends ValidatedAndAuthenticateRequest {
   validatedData: {
     body: z.infer<typeof apiKeyCreationSchems>;
+  };
+}
+
+export interface ApiKeyDeletionRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    body: z.infer<typeof apiKeyDeletionSchema>;
+  };
+}
+
+export interface MessageCreateRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    body: z.infer<typeof createMessageBodySchema>;
+    query: z.infer<typeof createMessageQuerySchema>;
+  };
+}
+
+export interface GetMessageRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    params: z.infer<typeof getMessageParams>;
   };
 }
