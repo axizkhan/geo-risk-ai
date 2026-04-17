@@ -5,8 +5,12 @@ import {
   createMessageBodySchema,
   createMessageQuerySchema,
   getMessageParams,
+  getMessageStatusQuey,
 } from "@repo/shared";
-import { createMessageController } from "../modules/message/message.controller";
+import {
+  createMessageController,
+  getMessageDetails,
+} from "../modules/message/message.controller";
 
 const messageRouter = Router();
 
@@ -25,6 +29,12 @@ messageRouter.get(
   authMiddleware,
   reqValidatorFunc({ params: getMessageParams }),
   getMessageDetails,
+);
+
+messageRouter.get(
+  "/",
+  authMiddleware,
+  reqValidatorFunc({ query: getMessageStatusQuey }),
 );
 
 export { messageRouter };

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { string } from "zod";
 
 export interface IVerify {
   verifyToken: string;

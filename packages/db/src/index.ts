@@ -22,3 +22,6 @@ export * from "./queries/delievery.queries.js";
 export * from "./types/delievry.types.js";
 
 export * from "./types/message.types.js";
+
+/**all dashboard Queries*/
+export * from "./queries/dashboard/index.js";

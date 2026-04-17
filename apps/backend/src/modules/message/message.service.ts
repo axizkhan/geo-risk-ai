@@ -2,6 +2,7 @@ import {
   createNewDelievery,
   createNewMessage,
   findProvider4Job,
+  getMessagesStatus,
   getProviderForMsg,
   validateApiKey,
 } from "@repo/core";
@@ -80,6 +81,33 @@ export async function getMessageDetailsService(
       success: true,
       message: "success",
       data,
+    };
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getMessageStatusService({
+  userId,
+  messageStatus,
+}: {
+  userId: string;
+  messageStatus: string;
+}) {
+  try {
+    const result = await getMessagesStatus({ userId, status: messageStatus });
+    if (!result) {
+      return {
+        success: false,
+        message: "No data is available",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Data is available",
+      data: result,
     };
   } catch (err) {
     throw err;

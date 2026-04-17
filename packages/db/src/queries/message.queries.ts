@@ -1,8 +1,7 @@
 import { ChannelType } from "@repo/shared";
 import { IMessage, MessageModel } from "../models/message.model";
 import mongoose from "mongoose";
-import { retryDelievryAndUpdate } from "./delievery.queries";
-import { MessageStatus } from "../types/message.types";
+import { MessagesStatusQuery, MessageStatus } from "../types/message.types";
 
 export const createMessageDocuement = async ({
   content,
@@ -138,6 +137,53 @@ export const getMessageDetailsId = async (
 ): Promise<IMessage | null> => {
   try {
     return await MessageModel.findById(_id).lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const messageStartAt = async (
+  _id: string,
+): Promise<mongoose.UpdateResult> => {
+  try {
+    return await MessageModel.updateOne(
+      { _id },
+      {
+        $set: { jobStartedAt: new Date() },
+      },
+    );
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const messageEndAt = async (
+  _id: string,
+): Promise<mongoose.UpdateResult> => {
+  try {
+    return await MessageModel.updateOne(
+      { _id },
+      { $set: { jobEndAt: new Date() } },
+    );
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getMessages = async ({
+  userId,
+  status,
+}: {
+  userId: string;
+  status: string;
+}): Promise<Array<MessagesStatusQuery> | null> => {
+  try {
+    return await MessageModel.find({
+      userId: { $eq: userId },
+      status: { $eq: status },
+    })
+      .projection({ userId: 0 })
+      .populate({ path: "userId", select: "provider_name isEnable type -_id" });
   } catch (err) {
     throw err;
   }

@@ -1,4 +1,3 @@
-import { channelTypeSchema, providerNameSchema } from "@repo/shared";
 import mongoose from "mongoose";
 import { CHANNEL_TYPES, PROVIDER_NAMES } from "../types/message.types";
 

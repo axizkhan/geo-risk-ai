@@ -46,3 +46,14 @@ export const getMessageDataSchema = z.object({
 });
 
 export const getMessageResSchema = standeredResSchema(getMessageDataSchema);
+
+export const getMessageStatusQuey = z.object({
+  status: z.enum(["failed", "partial", "success"]),
+});
+
+export const getMessageStatus = z.array(
+  z.object({
+    content: z.string(),
+    channel: z.enum(channelTypeSchema.options),
+  }),
+);

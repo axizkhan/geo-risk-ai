@@ -14,6 +14,7 @@ import {
   signupSchema,
   verifySchema,
   getMessageParams,
+  getMessageStatusQuey,
 } from "@repo/shared";
 
 type ValidationValueType =
@@ -29,7 +30,8 @@ type ValidationValueType =
   | z.infer<typeof apiKeyDeletionSchema>
   | z.infer<typeof createMessageBodySchema>
   | z.infer<typeof createMessageQuerySchema>
-  | z.infer<typeof getMessageParams>;
+  | z.infer<typeof getMessageParams>
+  | z.infer<typeof getMessageStatusQuey>;
 
 export type ValidateDataType = {
   body?: ValidationValueType;
@@ -110,5 +112,11 @@ export interface MessageCreateRequest extends ValidatedAndAuthenticateRequest {
 export interface GetMessageRequest extends ValidatedAndAuthenticateRequest {
   validatedData: {
     params: z.infer<typeof getMessageParams>;
+  };
+}
+
+export interface GetMessageStatusRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    query: z.infer<typeof getMessageStatusQuey>;
   };
 }

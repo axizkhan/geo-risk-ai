@@ -5,6 +5,8 @@ import {
   findMessageAndStatusToUpd,
   findProvider4Job,
   messageDelievriesStatus,
+  messageEnd,
+  messageStart,
   retryDelievry,
   successDelievry,
   updateMessageForDelivery,
@@ -34,6 +36,7 @@ export const sendEmail = async (job: any) => {
     });
     //find delievries for email in batch till their is no email
     //loop true
+    await messageStart(messageId);
     while (true) {
       //find delieveir for batch
       const delievries = await findDelieverie4Sending({
@@ -41,6 +44,7 @@ export const sendEmail = async (job: any) => {
         batchSize: 30,
       });
       if (!delievries.length) {
+        await messageEnd(messageId);
         break;
       }
       delievries.forEach(async (delivery) => {
