@@ -25,3 +25,6 @@ export * from "./types/message.types.js";
 
 /**all dashboard Queries*/
 export * from "./queries/dashboard/index.js";
+
+/**export Interfaces for dashboard models */
+export * from "./models/dashboard/index.js";

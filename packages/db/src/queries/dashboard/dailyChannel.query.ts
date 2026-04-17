@@ -4,6 +4,8 @@ import {
   DailyChannelModel,
   IDailyChannel,
 } from "../../models/dashboard/dailyChannel.model.js";
+import { UpdateResult } from "mongoose";
+import { ChannelType } from "@repo/shared";
 
 export const createDailyChannelDoc = async ({
   userId,
@@ -19,16 +21,16 @@ export const createDailyChannelDoc = async ({
   }
 };
 
-export const isDailyChannelExist = async ({
+export const isDailyChannelExistQuery = async ({
   userId,
-  providerId,
+  channelType,
 }: {
   userId: string;
-  providerId: string;
-}) => {
+  channelType: string;
+}): Promise<IDailyChannel | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return DailyChannelModel.findOne({ userId, providerId, date });
+    return DailyChannelModel.findOne({ userId, channelType, date }).lean();
   } catch (err) {
     throw err;
   }
@@ -36,16 +38,16 @@ export const isDailyChannelExist = async ({
 
 export const updateDailyChannelMatrix = async ({
   userId,
-  providerId,
+  channelType,
   isSuccess,
 }: {
   userId: string;
-  providerId: string;
+  channelType: ChannelType;
   isSuccess: boolean;
-}) => {
+}): Promise<UpdateResult> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return DailyChannelModel.updateOne({ userId, providerId, date }, [
+    return DailyChannelModel.updateOne({ userId, channelType, date }, [
       {
         $set: {
           totalSent: {
