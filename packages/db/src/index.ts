@@ -28,3 +28,6 @@ export * from "./queries/dashboard/index.js";
 
 /**export Interfaces for dashboard models */
 export * from "./models/dashboard/index.js";
+
+/**export of types of dashboard doc */
+export * from "./types/dashboard.types.js";

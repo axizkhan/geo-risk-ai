@@ -1,9 +1,9 @@
-import { ChannelType } from "@repo/shared";
+import { ApiKeyAction, ChannelType } from "@repo/shared";
 import {
   DailyApiKeyAnalyticsModel,
   IDailyApi,
 } from "../../models/dashboard/dailyApiKey.model.js";
-import { ApiKeyModel } from "../../models/apiKey.model.js";
+import { FindApiKeyRange } from "../../types/dashboard.types.js";
 
 export const createDailyApiKeyDoc = async ({
   userId,
@@ -14,7 +14,7 @@ export const createDailyApiKeyDoc = async ({
   userId: string;
   apiKeyId: string;
   channel: [ChannelType];
-  types: [string];
+  types: [ApiKeyAction];
 }) => {
   try {
     return await DailyApiKeyAnalyticsModel.create({
@@ -91,11 +91,11 @@ export const findDailyApiKeyDocsRange = async ({
   userId: string;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<FindApiKeyRange> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
-    let [result] = await ApiKeyModel.aggregate([
+    let [result] = await DailyApiKeyAnalyticsModel.aggregate([
       {
         $facet: {
           //calculate summary
@@ -142,9 +142,11 @@ export const findDailyApiKeyDocsRange = async ({
   }
 };
 
-export const findDailyApiKeyDocs = async (userId: string) => {
+export const findDailyApiKeyDocs = async (
+  userId: string,
+): Promise<FindApiKeyRange> => {
   try {
-    let [result] = await ApiKeyModel.aggregate([
+    let [result] = await DailyApiKeyAnalyticsModel.aggregate([
       {
         $facet: {
           summary: [
@@ -190,7 +192,7 @@ export const dailyApiKeyDocPagination = async ({
   limit: number;
 }): Promise<Array<IDailyApi> | null> => {
   try {
-    return await ApiKeyModel.find({ userId })
+    return await DailyApiKeyAnalyticsModel.find({ userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -216,7 +218,7 @@ export const dailyApiKeyDocRangePagination = async ({
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
-    return await ApiKeyModel.find({
+    return await DailyApiKeyAnalyticsModel.find({
       userId,
       $and: [{ date: { $gte: startDate } }, { date: { $lte: endDate } }],
     })

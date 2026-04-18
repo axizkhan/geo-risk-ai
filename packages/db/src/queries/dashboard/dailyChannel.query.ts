@@ -1,11 +1,10 @@
-import { TextEncoderStream } from "stream/web";
-import { ApiKeyModel } from "../../models/apiKey.model.js";
 import {
   DailyChannelModel,
   IDailyChannel,
 } from "../../models/dashboard/dailyChannel.model.js";
 import { UpdateResult } from "mongoose";
 import { ChannelType } from "@repo/shared";
+import { FindChannelRangeDoc } from "../../types/dashboard.types.js";
 
 export const createDailyChannelDoc = async ({
   userId,
@@ -83,7 +82,7 @@ export const findDailyChannelDocRange = async ({
   userId: string;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<FindChannelRangeDoc> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -133,7 +132,9 @@ export const findDailyChannelDocRange = async ({
   }
 };
 
-export const findDailyChannelDocs = async (userId: string) => {
+export const findDailyChannelDocs = async (
+  userId: string,
+): Promise<FindChannelRangeDoc> => {
   try {
     let [result] = await DailyChannelModel.aggregate([
       {
@@ -180,7 +181,7 @@ export const dailyChannelDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}) => {
+}): Promise<Array<IDailyChannel> | null> => {
   try {
     return await DailyChannelModel.find({ userId })
       .sort({ createdAt: -1 })

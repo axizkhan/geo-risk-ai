@@ -1,9 +1,11 @@
+import mongoose from "mongoose";
 import {
   AnalyticsDailyModel,
   IDailyAnalytics,
 } from "../../models/dashboard/dailyAnalytics.model.js";
+import { FindAnalyticsRangeDoc } from "../../types/dashboard.types.js";
 
-export const createAnalyticsDaily = async (userId: string) => {
+export const createAnalyticsDailyDoc = async (userId: string) => {
   try {
     return await AnalyticsDailyModel.create({ userId });
   } catch (err) {
@@ -30,7 +32,7 @@ export const updateDailyAnalyticsMatric = async ({
   userId: string;
   id: string;
   isSuccess: boolean;
-}) => {
+}): Promise<mongoose.UpdateResult> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await AnalyticsDailyModel.updateOne({ _id: id, userId, date }, [
@@ -69,7 +71,7 @@ export const dailyAnalyticsDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}) => {
+}): Promise<IDailyAnalytics[] | null> => {
   try {
     return await AnalyticsDailyModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -93,7 +95,7 @@ export const dailyAnalyticsDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<Array<IDailyAnalytics> | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -109,7 +111,9 @@ export const dailyAnalyticsDocRangePagination = async ({
   }
 };
 
-export const findDailyAnalyticsDoc = async (userId: string) => {
+export const findDailyAnalyticsDoc = async (
+  userId: string,
+): Promise<FindAnalyticsRangeDoc> => {
   try {
     let [result] = await AnalyticsDailyModel.aggregate([
       {
@@ -156,7 +160,7 @@ export const findDailyAnalyticsDocRange = async ({
   userId: string;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<FindAnalyticsRangeDoc> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));

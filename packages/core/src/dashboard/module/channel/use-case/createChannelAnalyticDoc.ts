@@ -1,7 +1,7 @@
 import { createDailyChannelDoc } from "@repo/db";
 import { ChannelType } from "@repo/shared";
 
-export async function createAnalyticsDaily({
+export async function createChannelAnalyticsDaily({
   userId,
   channelType,
 }: {

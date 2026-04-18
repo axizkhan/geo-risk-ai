@@ -1,5 +1,5 @@
-import { startEmailConsumer } from "./consumer/email.consumer";
+import { bootStrapEmail } from "./bootstrap/email.bootstrap";
 
 export const start = () => {
-  startEmailConsumer();
+  bootStrapEmail();
 };

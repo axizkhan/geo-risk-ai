@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src", "../../packages/queue/src/producer"],
   "exclude": ["node_modules"]
 }

@@ -1,28 +1,21 @@
-import { findDailyChannelDocRange } from "@repo/db";
+import {
+  FindAnalyticsRangeDoc,
+  findDailyAnalyticsDoc,
+  findDailyChannelDocs,
+} from "@repo/db";
 import { FindChannelRangeDoc } from "@repo/db";
 
-export async function findChannelRange({
+export async function findAllDailyAnalyticsDocs({
   userId,
-  startDate,
-  endDate,
 }: {
   userId: string;
-  startDate: string;
-  endDate: string;
 }): Promise<{
   success: boolean;
   message: string;
-  data: FindChannelRangeDoc | null;
+  data: FindAnalyticsRangeDoc | null;
 }> {
   try {
-    let startDateConver = new Date(startDate);
-    let endDateConver = new Date(endDate);
-
-    let result = await findDailyChannelDocRange({
-      userId,
-      startDate: startDateConver,
-      endDate: endDateConver,
-    });
+    let result = await findDailyAnalyticsDoc(userId);
 
     if (!result.data.length) {
       return {

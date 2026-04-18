@@ -1,7 +1,11 @@
-import { findDailyChannelDocRange } from "@repo/db";
-import { FindChannelRangeDoc } from "@repo/db";
+import {
+  FindApiKeyRange,
+  findDailyApiKeyDocsRange,
+  findDailyProviderDocRange,
+  FindProviderRange,
+} from "@repo/db";
 
-export async function findChannelRange({
+export async function findProviderRange({
   userId,
   startDate,
   endDate,
@@ -12,13 +16,13 @@ export async function findChannelRange({
 }): Promise<{
   success: boolean;
   message: string;
-  data: FindChannelRangeDoc | null;
+  data: FindProviderRange | null;
 }> {
   try {
     let startDateConver = new Date(startDate);
     let endDateConver = new Date(endDate);
 
-    let result = await findDailyChannelDocRange({
+    let result = await findDailyProviderDocRange({
       userId,
       startDate: startDateConver,
       endDate: endDateConver,

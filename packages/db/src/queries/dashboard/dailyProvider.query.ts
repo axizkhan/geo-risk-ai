@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
 import {
   DailyProviderAnalyticsModel,
   IDailyProvider,
 } from "../../models/dashboard/dailyProvider.model.js";
+import { FindProviderRange } from "../../types/dashboard.types.js";
 
 export const createDailyProviderAnyDoc = async ({
   userId,
@@ -37,31 +39,26 @@ export const isDailyProviderExist = async ({
 };
 
 export const updateDailyProviderMatrix = async ({
-  providerId,
-  userId,
+  _id,
   isSuccess,
 }: {
-  providerId: string;
-  userId: string;
+  _id: string;
   isSuccess: boolean;
-}) => {
+}): Promise<mongoose.UpdateResult> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return await DailyProviderAnalyticsModel.updateOne(
-      { userId, providerId, date },
-      [
-        {
-          $set: {
-            totalSent: {
-              $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
-            },
-            totalFailed: {
-              $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
-            },
+    return await DailyProviderAnalyticsModel.updateOne({ _id }, [
+      {
+        $set: {
+          totalSent: {
+            $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
+          },
+          totalFailed: {
+            $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
           },
         },
-      ],
-    );
+      },
+    ]);
   } catch (err) {
     throw err;
   }
@@ -86,7 +83,7 @@ export const dailyProviderDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}) => {
+}): Promise<IDailyProvider[] | null> => {
   try {
     return await DailyProviderAnalyticsModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -110,7 +107,7 @@ export const dailyProviderDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<IDailyProvider[] | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -126,7 +123,9 @@ export const dailyProviderDocRangePagination = async ({
   }
 };
 
-export const findDailyProviderDocs = async (userId: string) => {
+export const findDailyProviderDocs = async (
+  userId: string,
+): Promise<FindProviderRange> => {
   try {
     let [result] = await DailyProviderAnalyticsModel.aggregate([
       {
@@ -173,7 +172,7 @@ export const findDailyProviderDocRange = async ({
   userId: string;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<FindProviderRange> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));

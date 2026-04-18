@@ -8,19 +8,8 @@ export async function getMessagesStatus({
   status: string;
 }) {
   try {
-    const result = getMessages({ userId, status });
-    if (!result) {
-      return {
-        success: false,
-        message: "No data found",
-        data: null,
-      };
-    }
-    return {
-      success: true,
-      message: "Data found successfully",
-      data: result,
-    };
+    const result = await getMessages({ userId, status });
+    return result;
   } catch (err) {
     throw err;
   }

@@ -55,5 +55,11 @@ export const getMessageStatus = z.array(
   z.object({
     content: z.string(),
     channel: z.enum(channelTypeSchema.options),
+    status: z.enum(messageStatusSchema.options),
+    totalCount: z.number(),
+    successCount: z.number(),
+    failedCount: z.number(),
+    jobStartedAt: z.date().nullable(),
+    jobEndAt: z.date().nullable(),
   }),
 );
