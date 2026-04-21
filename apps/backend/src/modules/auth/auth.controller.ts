@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   loginService,
   logoutService,
@@ -24,7 +26,11 @@ export const signupController = async (
     res.json({ verifyUrl });
   }
 
-  throw new Error("Internal Server Error");
+  throw new InternalServerError({
+    appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+    errorType: ERROR_TYPE.SYSTEM,
+    message: "Internal server error",
+  });
 };
 
 export const verifyController = async (
@@ -41,7 +47,11 @@ export const verifyController = async (
     res.json({ verifyResponseData });
   }
 
-  throw new Error("Internal server error");
+  throw new InternalServerError({
+    appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+    errorType: ERROR_TYPE.SYSTEM,
+    message: "Internal server error",
+  });
 };
 
 export const loginController = async (

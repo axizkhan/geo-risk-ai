@@ -12,6 +12,12 @@ import {
   updateMessageForDelivery,
 } from "@repo/core";
 import { providers } from "@repo/provider";
+import { NotFound, InternalServerError } from "@repo/shared";
+import {
+  PROVIDER_ERROR_CODE,
+  SYSTEM_ERROR_CODE,
+  ERROR_TYPE,
+} from "@repo/shared";
 
 export const sendEmail = async (job: any) => {
   try {
@@ -20,7 +26,11 @@ export const sendEmail = async (job: any) => {
     //get the providerDocument
     const provider = await findProvider4Job({ userId, channel: type });
     if (!provider) {
-      throw new Error("No provider is found");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider not found",
+      });
     }
     //get the messageDocument and update it status
     const message = await findMessageAndStatusToUpd(messageId);
@@ -28,7 +38,11 @@ export const sendEmail = async (job: any) => {
     //decrypt the config
 
     if (!provider.config) {
-      throw new Error("Provider config is not defined");
+      throw new InternalServerError({
+        appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+        errorType: ERROR_TYPE.SYSTEM,
+        message: "Provider configuration is missing",
+      });
     }
     const config = await decrptProvider({
       configCipher: provider.config.configCipher,

@@ -1,4 +1,6 @@
 import { deleteDocumentByProviderIdAndUserId } from "@repo/db";
+import { NotFound } from "@repo/shared";
+import { PROVIDER_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 export async function deleteProvider({
   userId,
@@ -14,7 +16,11 @@ export async function deleteProvider({
     });
 
     if (!deletedProviderResult.deletedCount) {
-      throw new Error("Provider not found");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider not found",
+      });
     }
 
     return {

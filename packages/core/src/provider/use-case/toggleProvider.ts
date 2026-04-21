@@ -2,6 +2,8 @@ import {
   findProviderByProviderIdAndUserId,
   toggleProviderById,
 } from "@repo/db";
+import { NotFound } from "@repo/shared";
+import { PROVIDER_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 export async function toggleProvider({
   providerId,
@@ -19,13 +21,21 @@ export async function toggleProvider({
     );
 
     if (!providerDocument) {
-      throw new Error("provider document don't exist");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider not found",
+      });
     }
 
     const toggleDocument = await toggleProviderById(providerId, isActive);
 
     if (toggleDocument.matchedCount === 0) {
-      throw new Error("Provider not found");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider not found",
+      });
     }
 
     if (toggleDocument.modifiedCount === 0) {

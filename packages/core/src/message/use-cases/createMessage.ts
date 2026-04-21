@@ -1,5 +1,6 @@
 import { createMessageDocuement } from "@repo/db";
-import { ChannelType } from "@repo/shared";
+import { ChannelType, InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 export async function createNewMessage({
   content,
@@ -24,7 +25,11 @@ export async function createNewMessage({
       totalCount: totalMessagesCount,
     });
     if (!newMessageDoc) {
-      throw new Error("Internel server error");
+      throw new InternalServerError({
+        appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+        errorType: ERROR_TYPE.SYSTEM,
+        message: "Failed to create message",
+      });
     }
     return newMessageDoc;
   } catch (err) {

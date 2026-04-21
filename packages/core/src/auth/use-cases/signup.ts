@@ -2,6 +2,8 @@ import { SignupRequestDTO } from "@repo/shared";
 import { findUserByEmail, createNewUser, createVerify } from "@repo/db";
 import { hashPasswordFunc } from "../utils/hasingPasswordUtil";
 import { jwtTokenGeneration } from "../utils/jwtToken";
+import { Conflict } from "@repo/shared";
+import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 export type SingupUserFunDTO = {
   verifyToken: string;
@@ -16,7 +18,11 @@ export async function signupUser(
     const existingUser = await findUserByEmail(email);
 
     if (existingUser) {
-      throw new Error("User already exist");
+      throw new Conflict({
+        appCode: AUTH_ERROR_CODE.EMAIL_ALREADY_EXISTS,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "User already exist",
+      });
     }
 
     const hashPassword = await hashPasswordFunc(password);
@@ -35,6 +41,9 @@ export async function signupUser(
       verifyToken,
     };
   } catch (err) {
+    if (err instanceof Error && err.constructor.name !== "Conflict") {
+      throw err;
+    }
     throw err;
   }
 }

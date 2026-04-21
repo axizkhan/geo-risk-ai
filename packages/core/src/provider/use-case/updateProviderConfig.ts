@@ -2,6 +2,8 @@ import {
   findProviderByProviderIdAndUserId,
   updateProviderConfigById,
 } from "@repo/db";
+import { NotFound, BadRequest } from "@repo/shared";
+import { PROVIDER_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   decrptyProviderConfig,
   encryptionProviderConfig,
@@ -28,7 +30,11 @@ export async function updateProviderConfig({
     );
 
     if (!providerDocument) {
-      throw new Error("provider document don't exist");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider not found",
+      });
     }
 
     const dcrptedConfig = decrptyProviderConfig(
@@ -40,9 +46,11 @@ export async function updateProviderConfig({
     const validateConfig = provideConfigValidator(provider_name, updatedConfig);
 
     if (!validateConfig.success) {
-      throw new Error(
-        `Validate config fail ${validateConfig.error.issues.toString()}`,
-      );
+      throw new BadRequest({
+        appCode: PROVIDER_ERROR_CODE.CONFIG_INVALID,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: `Provider config validation failed: ${validateConfig.error.issues.toString()}`,
+      });
     }
 
     const encrptedConfig = encryptionProviderConfig(validateConfig);

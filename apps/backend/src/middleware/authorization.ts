@@ -1,5 +1,6 @@
 import { findUserByEmail } from "@repo/db";
-import { jwtTokenVerifyAndDecode } from "@repo/shared";
+import { jwtTokenVerifyAndDecode, Unauthorized } from "@repo/shared";
+import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import { NextFunction, Request, Response } from "express";
 
 export async function authMiddleware(
@@ -12,7 +13,11 @@ export async function authMiddleware(
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    throw new Error("Login before processed");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "Authentication token is missing. Please login first",
+    });
   }
 
   let decodedToken = await jwtTokenVerifyAndDecode(token);
@@ -20,11 +25,19 @@ export async function authMiddleware(
   let user = await findUserByEmail(decodedToken.email);
 
   if (!user) {
-    throw new Error("Signup before processed");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "User not found. Please signup first",
+    });
   }
 
   if (decodedToken.tokenVersion !== user.tokenVersion) {
-    throw new Error("Session Expired");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.SESSION_EXPIRED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "Session has expired. Please login again",
+    });
   }
 
   req.user = {

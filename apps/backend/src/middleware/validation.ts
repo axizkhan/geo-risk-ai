@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodType } from "zod";
+import { InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 type ValidationSchema = {
   body?: ZodType;
@@ -37,7 +39,11 @@ export function reqValidatorFunc(schema: ValidationSchema) {
         req.validatedData[field] = result.data;
         continue;
       }
-      throw new Error("Error occure in validation");
+      throw new InternalServerError({
+        appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+        errorType: ERROR_TYPE.SYSTEM,
+        message: "Validation middleware error",
+      });
     }
 
     next();

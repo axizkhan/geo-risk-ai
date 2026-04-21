@@ -1,5 +1,6 @@
 import { createNewDelieveryDocs, CreateNewDelievries } from "@repo/db";
-
+import { InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import mongoose, { mongo } from "mongoose";
 
 export async function createNewDelievery({
@@ -21,7 +22,11 @@ export async function createNewDelievery({
 
     const delieveriesInstDb = await createNewDelieveryDocs(deliveriesArray);
     if (deliveriesArray.length !== delieveriesInstDb.length) {
-      throw new Error("Delieveries creation failed please try again");
+      throw new InternalServerError({
+        appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+        errorType: ERROR_TYPE.SYSTEM,
+        message: "Failed to create deliveries. Please try again",
+      });
     }
   } catch (err) {
     throw err;

@@ -1,4 +1,16 @@
-import { ApiKeyCreationService, ChannelType } from "@repo/shared";
+import {
+  ApiKeyCreationService,
+  ChannelType,
+  NotFound,
+  BadRequest,
+  InternalServerError,
+} from "@repo/shared";
+import {
+  PROVIDER_ERROR_CODE,
+  VALIDATION_ERROR_CODE,
+  SYSTEM_ERROR_CODE,
+  ERROR_TYPE,
+} from "@repo/shared";
 import { apiKeyGenerator } from "../utils/apiKeyGenerator";
 import { hashApiKeyFunc } from "../utils/apiKeyHash";
 import { createApiKeyDoc, findAllProviderByUserId } from "@repo/db";
@@ -12,7 +24,11 @@ export async function apiKeyCreation(data: ApiKeyCreationService) {
     const allUserProvider = await findAllProviderByUserId(data.userId);
 
     if (!allUserProvider) {
-      throw new Error("Provider dont exist");
+      throw new NotFound({
+        appCode: PROVIDER_ERROR_CODE.NOT_FOUND,
+        errorType: ERROR_TYPE.BUSINESS,
+        message: "Provider does not exist",
+      });
     }
 
     const allProviderType = allUserProvider.map((provider) => provider.type);
@@ -24,7 +40,11 @@ export async function apiKeyCreation(data: ApiKeyCreationService) {
     );
 
     if (providerForChannel.success) {
-      throw new Error(providerForChannel.message);
+      throw new BadRequest({
+        appCode: VALIDATION_ERROR_CODE.SCHEMA_VALIDATION_FAILED,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: providerForChannel.message,
+      });
     }
 
     const newApiKeyDoc = await createApiKeyDoc({
@@ -35,7 +55,11 @@ export async function apiKeyCreation(data: ApiKeyCreationService) {
     });
 
     if (!newApiKeyDoc) {
-      throw new Error("Internal server error");
+      throw new InternalServerError({
+        appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+        errorType: ERROR_TYPE.SYSTEM,
+        message: "Failed to create API key",
+      });
     }
 
     return {

@@ -1,4 +1,5 @@
-import { DashboardFieldType } from "@repo/shared";
+import { DashboardFieldType, BadRequest } from "@repo/shared";
+import { VALIDATION_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import { fieldSummaryDataFactoryFunc } from "../util/fieldSummaryDataFactory";
 import { dashboardDatesValidateFunc } from "../util/dashboardDateValidation";
 
@@ -17,15 +18,21 @@ export async function dashboardRangeFieldRangeSummaryOrchestarto({
     const dashboardFieldSummaryDatafunc = fieldSummaryDataFactoryFunc(field);
 
     if (!dashboardFieldSummaryDatafunc.function) {
-      throw new Error(
-        "wrong field this field dont exist in function orchetrator",
-      );
+      throw new BadRequest({
+        appCode: VALIDATION_ERROR_CODE.INVALID_INPUT,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: `Invalid field '${field}' does not exist in dashboard`,
+      });
     }
 
     let datesValidation = dashboardDatesValidateFunc({ startDate, endDate });
 
     if (!datesValidation.success) {
-      throw new Error(datesValidation.error);
+      throw new BadRequest({
+        appCode: VALIDATION_ERROR_CODE.INVALID_INPUT,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: datesValidation.error,
+      });
     }
 
     const result = await dashboardFieldSummaryDatafunc.function({ userId });

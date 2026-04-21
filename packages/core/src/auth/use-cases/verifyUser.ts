@@ -3,7 +3,9 @@ import {
   jwtTokenVerifyAndDecode,
   VerifyRequestDTO,
   VerifyResponseDTO,
+  Unauthorized,
 } from "@repo/shared";
+import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import { jwtTokenGeneration } from "../utils/jwtToken";
 
 export async function verifyUserToken(
@@ -14,7 +16,11 @@ export async function verifyUserToken(
   const verifyTokenDocument = await findVerifyToken(verifyToken);
 
   if (!verifyTokenDocument) {
-    throw new Error("verify token expire please signup again");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.TOKEN_EXPIRED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "Verification token has expired. Please signup again",
+    });
   }
 
   const decodeToken = await jwtTokenVerifyAndDecode(verifyToken);
@@ -22,7 +28,11 @@ export async function verifyUserToken(
   const verifyUserDocument = await verifyUser(decodeToken.id);
 
   if (!verifyUserDocument) {
-    throw new Error("Verify token expire please signup again");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.TOKEN_EXPIRED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "Verification token has expired. Please signup again",
+    });
   }
 
   const authToken = jwtTokenGeneration(

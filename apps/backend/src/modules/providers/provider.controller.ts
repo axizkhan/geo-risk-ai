@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { Unauthorized } from "@repo/shared";
+import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   DeleteConfigRequest,
   ToggleConfigRequest,
@@ -19,7 +21,11 @@ export const providerCreateController = async (
   next: NextFunction,
 ) => {
   if (!req.user) {
-    throw new Error("User is not authorized");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "User is not authenticated",
+    });
   }
   const typedReq = req as ValidatedAndAuthenticateRequest;
   const user = typedReq.user;
@@ -38,7 +44,11 @@ export const getAllProviderController = async (
   next: NextFunction,
 ) => {
   if (!req.user) {
-    throw new Error("User is not authorized");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "User is not authenticated",
+    });
   }
 
   const user = req.user;
@@ -55,7 +65,11 @@ export const updateProviderConfig = async (
   next: NextFunction,
 ) => {
   if (!req.user) {
-    throw new Error("User is not authorized");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "User is not authenticated",
+    });
   }
 
   const valAndAuthReq = req as UpdateConfigRequest;
@@ -82,7 +96,11 @@ export const toggleProvider = async (
   next: NextFunction,
 ) => {
   if (!req.user) {
-    throw new Error("User is not authorized");
+    throw new Unauthorized({
+      appCode: AUTH_ERROR_CODE.USER_NOT_AUTHENTICATED,
+      errorType: ERROR_TYPE.AUTH,
+      message: "User is not authenticated",
+    });
   }
   const authReq = req as ToggleConfigRequest;
 

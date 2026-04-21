@@ -1,4 +1,5 @@
-import { providerCreationDTO } from "@repo/shared";
+import { providerCreationDTO, BadRequest } from "@repo/shared";
+import { PROVIDER_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   provideConfigValidator,
   validateProviderChannel,
@@ -21,15 +22,21 @@ export async function createProvider(
     );
 
     if (!isProviderSupportChannel) {
-      throw new Error("Channel not supported by provider");
+      throw new BadRequest({
+        appCode: PROVIDER_ERROR_CODE.CHANNEL_NOT_SUPPORTED,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: "Channel not supported by this provider",
+      });
     }
 
     const configAllowed = provideConfigValidator(provider_name, config);
 
     if (!configAllowed.success) {
-      throw new Error(
-        `Provider config not matched, ${configAllowed.error.issues.toString()}`,
-      );
+      throw new BadRequest({
+        appCode: PROVIDER_ERROR_CODE.CONFIG_INVALID,
+        errorType: ERROR_TYPE.VALIDATION,
+        message: `Provider config invalid: ${configAllowed.error.issues.toString()}`,
+      });
     }
 
     let encrptedProviderConfig = encryptionProviderConfig(config);

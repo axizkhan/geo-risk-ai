@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { env } from "@repo/shared";
+import { env, InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 let isConnected = false;
 
@@ -9,7 +10,11 @@ export function mongoConnection() {
   const mongoUrl = env.MONGODB_URL;
 
   if (!mongoUrl) {
-    throw new Error("Mongo url is not defined");
+    throw new InternalServerError({
+      appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+      errorType: ERROR_TYPE.SYSTEM,
+      message: "MongoDB connection URL is not configured",
+    });
   }
 
   mongoose.connect(mongoUrl);

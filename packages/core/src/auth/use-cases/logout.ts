@@ -1,5 +1,6 @@
 import { userTokenVersionIncrement } from "@repo/db";
-import { LogoutDTO } from "@repo/shared";
+import { LogoutDTO, InternalServerError } from "@repo/shared";
+import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
 export async function logoutUser(data: LogoutDTO): Promise<string> {
   const { id } = data;
@@ -7,7 +8,11 @@ export async function logoutUser(data: LogoutDTO): Promise<string> {
   const isTokenVersionInc = await userTokenVersionIncrement(id);
 
   if (!isTokenVersionInc) {
-    throw new Error("Enable to logout");
+    throw new InternalServerError({
+      appCode: SYSTEM_ERROR_CODE.DATABASE_ERROR,
+      errorType: ERROR_TYPE.SYSTEM,
+      message: "Unable to logout. Please try again",
+    });
   }
 
   return "Logout successfull";
