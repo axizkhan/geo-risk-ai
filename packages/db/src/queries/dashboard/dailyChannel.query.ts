@@ -1,8 +1,8 @@
 import {
   DailyChannelModel,
-  IDailyChannel,
+  IDailyChannelLean,
 } from "../../models/dashboard/dailyChannel.model.js";
-import { UpdateResult } from "mongoose";
+import mongoose, { UpdateResult } from "mongoose";
 import { ChannelType } from "@repo/shared";
 import { FindChannelRangeDoc } from "../../types/dashboard.types.js";
 
@@ -26,7 +26,7 @@ export const isDailyChannelExistQuery = async ({
 }: {
   userId: string;
   channelType: string;
-}): Promise<IDailyChannel | null> => {
+}): Promise<IDailyChannelLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return DailyChannelModel.findOne({ userId, channelType, date }).lean();
@@ -36,28 +36,29 @@ export const isDailyChannelExistQuery = async ({
 };
 
 export const updateDailyChannelMatrix = async ({
-  userId,
-  channelType,
+  id,
   isSuccess,
 }: {
-  userId: string;
-  channelType: ChannelType;
+  id: string;
   isSuccess: boolean;
 }): Promise<UpdateResult> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return DailyChannelModel.updateOne({ userId, channelType, date }, [
-      {
-        $set: {
-          totalSent: {
-            $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
-          },
-          totalFailed: {
-            $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+    return DailyChannelModel.updateOne(
+      { _id: new mongoose.Schema.Types.ObjectId(id) },
+      [
+        {
+          $set: {
+            totalSent: {
+              $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
+            },
+            totalFailed: {
+              $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+            },
           },
         },
-      },
-    ]);
+      ],
+    );
   } catch (err) {
     throw err;
   }
@@ -65,7 +66,7 @@ export const updateDailyChannelMatrix = async ({
 
 export const findDailyChannelDoc = async (
   userId: string,
-): Promise<IDailyChannel | null> => {
+): Promise<IDailyChannelLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await DailyChannelModel.findOne({ userId, date }).lean();
@@ -181,7 +182,7 @@ export const dailyChannelDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}): Promise<Array<IDailyChannel> | null> => {
+}): Promise<Array<IDailyChannelLean> | null> => {
   try {
     return await DailyChannelModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -205,7 +206,7 @@ export const dailyChannelDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<Array<IDailyChannelLean> | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -216,6 +217,48 @@ export const dailyChannelDocRangePagination = async ({
       .skip(skip)
       .limit(limit)
       .lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const summaryChannelQuery = async ({
+  userId,
+  endDate,
+  startDate,
+}: {
+  userId: string;
+  endDate: Date;
+  startDate: Date;
+}) => {
+  try {
+    let [result] = await DailyChannelModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Schema.Types.ObjectId(userId),
+          data: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSent: { $sum: "$totalSent" },
+          totalFailed: { $sum: "$totalFaild" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalSent: 1,
+          totalFailed: 1,
+        },
+      },
+    ]);
+
+    return result;
   } catch (err) {
     throw err;
   }

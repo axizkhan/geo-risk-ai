@@ -1,4 +1,5 @@
-import { dailyAnalyticsDocRangePagination, IDailyAnalytics } from "@repo/db";
+import { dailyAnalyticsDocRangePagination } from "@repo/db";
+import { IDailyAnalyticLean } from "@repo/db/src/models/dashboard/dailyAnalytics.model";
 
 export async function dailyAnalyticsRangePagination({
   userId,
@@ -15,7 +16,7 @@ export async function dailyAnalyticsRangePagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyAnalytics> | null;
+  data: Array<IDailyAnalyticLean> | null;
 }> {
   try {
     let startDateCon = new Date(startDate);

@@ -36,8 +36,12 @@ const dailyChannelSchema = new mongoose.Schema(
 dailyChannelSchema.index({ userId: 1, channel: 1, date: 1 });
 
 export type IDailyChannel = mongoose.InferSchemaType<typeof dailyChannelSchema>;
+export type IDailyChannelDoc = mongoose.HydratedDocument<IDailyChannel>;
+export type IDailyChannelLean = IDailyChannel & {
+  _id: mongoose.Schema.Types.ObjectId;
+};
 
-export const DailyChannelModel = mongoose.model<IDailyChannel>(
+export const DailyChannelModel = mongoose.model<IDailyChannelLean>(
   "DailyChannel",
   dailyChannelSchema,
 );

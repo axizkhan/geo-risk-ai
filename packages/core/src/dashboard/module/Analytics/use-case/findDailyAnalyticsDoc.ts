@@ -1,8 +1,9 @@
 import { IDailyAnalytics, isUserDailyAnalyticsExist } from "@repo/db";
+import { IDailyAnalyticLean } from "@repo/db/src/models/dashboard/dailyAnalytics.model";
 
 export async function findDailyAnalytics(
   userId: string,
-): Promise<{ success: boolean; data: IDailyAnalytics | null }> {
+): Promise<{ success: boolean; data: IDailyAnalyticLean | null }> {
   try {
     let result = await isUserDailyAnalyticsExist(userId);
     if (!result) {

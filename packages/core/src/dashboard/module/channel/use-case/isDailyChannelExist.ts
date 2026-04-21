@@ -1,4 +1,5 @@
-import { IDailyChannel, isDailyChannelExistQuery } from "@repo/db";
+import { isDailyChannelExistQuery } from "@repo/db";
+import { IDailyChannelLean } from "@repo/db/src/models/dashboard/dailyChannel.model";
 import { ChannelType } from "@repo/shared";
 
 export async function isDailyChannelExist({
@@ -7,7 +8,7 @@ export async function isDailyChannelExist({
 }: {
   userId: string;
   channelType: ChannelType;
-}): Promise<{ success: boolean; data: IDailyChannel | null }> {
+}): Promise<{ success: boolean; data: IDailyChannelLean | null }> {
   try {
     let result = await isDailyChannelExistQuery({ userId, channelType });
     if (!result) {

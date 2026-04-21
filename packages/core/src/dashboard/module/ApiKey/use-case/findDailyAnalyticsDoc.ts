@@ -1,4 +1,5 @@
 import { IDailyApi, isDailyApiKeyDocExist } from "@repo/db";
+import { IDailyApiKeyLean } from "@repo/db/src/models/dashboard/dailyApiKey.model";
 
 export async function findDailyApiKey({
   userId,
@@ -6,7 +7,7 @@ export async function findDailyApiKey({
 }: {
   userId: string;
   apiKeyId: string;
-}): Promise<{ success: boolean; data: IDailyApi | null }> {
+}): Promise<{ success: boolean; data: IDailyApiKeyLean | null }> {
   try {
     let result = await isDailyApiKeyDocExist({ userId, apiKeyId });
     if (!result) {

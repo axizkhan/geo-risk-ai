@@ -1,7 +1,4 @@
-export type DashBoardMultipleDocsQuery = {
-  totalSent?: number;
-  totalFailed?: number;
-  count?: number;
-};
+import * as z from "zod";
+import { dashboardFieldTypeSchema } from "../validation/dashboard.schema";
 
-export type FindChannelRangeDoc = DashBoardMultipleDocsQuery & {};
+export type DashboardFieldType = z.infer<typeof dashboardFieldTypeSchema>;

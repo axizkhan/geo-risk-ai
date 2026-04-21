@@ -1,9 +1,4 @@
-import {
-  FindApiKeyRange,
-  findDailyApiKeyDocs,
-  findDailyProviderDocs,
-  FindProviderRange,
-} from "@repo/db";
+import { findDailyProviderDocs, FindProviderRange } from "@repo/db";
 
 export async function findAllDailyProviderDocs({
   userId,

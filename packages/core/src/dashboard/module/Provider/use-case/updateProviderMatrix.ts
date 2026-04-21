@@ -1,6 +1,6 @@
-import { updateDailyApiMatrix } from "@repo/db";
+import { updateDailyProviderMatrix } from "@repo/db";
 
-export async function updateDailyApiKeyMatrix({
+export async function updateDailyProviderDocMatrix({
   id,
   isSuccess,
 }: {
@@ -8,7 +8,7 @@ export async function updateDailyApiKeyMatrix({
   isSuccess: boolean;
 }): Promise<{ success: boolean }> {
   try {
-    let result = await updateDailyApiMatrix({
+    let result = await updateDailyProviderMatrix({
       _id: id,
       isSuccess,
     });

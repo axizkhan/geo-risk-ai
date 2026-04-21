@@ -1,12 +1,13 @@
 import { IDailyProvider, isDailyProviderExist } from "@repo/db";
+import { IDailyProviderLean } from "@repo/db/src/models/dashboard/dailyProvider.model";
 
-export async function isDailyProviderExistDoc({
+export async function findDailyProvider({
   userId,
   providerId,
 }: {
   userId: string;
   providerId: string;
-}): Promise<{ success: boolean; data: IDailyProvider | null }> {
+}): Promise<{ success: boolean; data: IDailyProviderLean | null }> {
   try {
     let result = await isDailyProviderExist({ userId, providerId });
     if (!result) {

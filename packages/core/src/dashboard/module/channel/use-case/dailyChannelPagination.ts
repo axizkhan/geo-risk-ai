@@ -1,4 +1,5 @@
-import { dailyChannelDocPagination, IDailyChannel } from "@repo/db";
+import { dailyChannelDocPagination } from "@repo/db";
+import { IDailyChannelLean } from "@repo/db/src/models/dashboard/dailyChannel.model";
 
 export async function dailyChannelPagination({
   userId,
@@ -11,7 +12,7 @@ export async function dailyChannelPagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyChannel> | null;
+  data: Array<IDailyChannelLean> | null;
 }> {
   try {
     let skip: number = limit * (page - 1);

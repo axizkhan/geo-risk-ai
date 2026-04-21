@@ -6,3 +6,4 @@ export * from "./use-case/findDailyChannelAllDocs.js";
 export * from "./use-case/findDailyChannelDoc.js";
 export * from "./use-case/isDailyChannelExist.js";
 export * from "./use-case/updateChannelMatrix.js";
+export * from "./use-case/channelSummary.js";

@@ -6,3 +6,4 @@ export * from "./use-case/findDailyAnalyticsDoc.js";
 export * from "./use-case/findDailyApiKeyAllDocs.js";
 export * from "./use-case/isDailyApiKeyExist.js";
 export * from "./use-case/updateApiKeyMatrix.js";
+export * from "./use-case/summaryApiKey.js";

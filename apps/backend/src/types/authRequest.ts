@@ -15,6 +15,10 @@ import {
   verifySchema,
   getMessageParams,
   getMessageStatusQuey,
+  dashboardPaginationParamsSchema,
+  dashboardPaginationQuerySchema,
+  dashboardPaginationRangeBodySchema,
+  dashboardHomeQuerySchema,
 } from "@repo/shared";
 
 type ValidationValueType =
@@ -31,7 +35,11 @@ type ValidationValueType =
   | z.infer<typeof createMessageBodySchema>
   | z.infer<typeof createMessageQuerySchema>
   | z.infer<typeof getMessageParams>
-  | z.infer<typeof getMessageStatusQuey>;
+  | z.infer<typeof getMessageStatusQuey>
+  | z.infer<typeof dashboardPaginationParamsSchema>
+  | z.infer<typeof dashboardPaginationQuerySchema>
+  | z.infer<typeof dashboardPaginationRangeBodySchema>
+  | z.infer<typeof dashboardHomeQuerySchema>;
 
 export type ValidateDataType = {
   body?: ValidationValueType;
@@ -118,5 +126,39 @@ export interface GetMessageRequest extends ValidatedAndAuthenticateRequest {
 export interface GetMessageStatusRequest extends ValidatedAndAuthenticateRequest {
   validatedData: {
     query: z.infer<typeof getMessageStatusQuey>;
+  };
+}
+
+export interface DashboardPaginationRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    query: z.infer<typeof dashboardPaginationQuerySchema>;
+    params: z.infer<typeof dashboardPaginationParamsSchema>;
+  };
+}
+
+export interface DashboarsRangePaginationRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    query: z.infer<typeof dashboardPaginationQuerySchema>;
+    params: z.infer<typeof dashboardPaginationParamsSchema>;
+    body: z.infer<typeof dashboardPaginationRangeBodySchema>;
+  };
+}
+
+export interface DashboardRangeSummaryRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    params: z.infer<typeof dashboardPaginationParamsSchema>;
+    body: z.infer<typeof dashboardPaginationRangeBodySchema>;
+  };
+}
+
+export interface DashboardSummaryRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    params: z.infer<typeof dashboardPaginationParamsSchema>;
+  };
+}
+
+export interface DashboardHomeRequest extends ValidatedAndAuthenticateRequest {
+  validatedData: {
+    query: z.infer<typeof dashboardHomeQuerySchema>;
   };
 }

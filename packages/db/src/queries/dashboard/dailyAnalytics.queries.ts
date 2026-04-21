@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import {
   AnalyticsDailyModel,
-  IDailyAnalytics,
+  IDailyAnalyticLean,
 } from "../../models/dashboard/dailyAnalytics.model.js";
 import { FindAnalyticsRangeDoc } from "../../types/dashboard.types.js";
 
@@ -15,7 +15,7 @@ export const createAnalyticsDailyDoc = async (userId: string) => {
 
 export const isUserDailyAnalyticsExist = async (
   userId: string,
-): Promise<IDailyAnalytics | null> => {
+): Promise<IDailyAnalyticLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await AnalyticsDailyModel.findOne({ userId, date }).lean();
@@ -25,28 +25,28 @@ export const isUserDailyAnalyticsExist = async (
 };
 
 export const updateDailyAnalyticsMatric = async ({
-  userId,
   id,
   isSuccess,
 }: {
-  userId: string;
   id: string;
   isSuccess: boolean;
 }): Promise<mongoose.UpdateResult> => {
   try {
-    let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return await AnalyticsDailyModel.updateOne({ _id: id, userId, date }, [
-      {
-        $set: {
-          totalSent: {
-            $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
-          },
-          totalFailed: {
-            $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+    return await AnalyticsDailyModel.updateOne(
+      { _id: new mongoose.Schema.Types.ObjectId(id) },
+      [
+        {
+          $set: {
+            totalSent: {
+              $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
+            },
+            totalFailed: {
+              $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+            },
           },
         },
-      },
-    ]);
+      ],
+    );
   } catch (err) {
     throw err;
   }
@@ -54,7 +54,7 @@ export const updateDailyAnalyticsMatric = async ({
 
 export const isDailyAnalyticsDocExist = async (
   userId: string,
-): Promise<IDailyAnalytics | null> => {
+): Promise<IDailyAnalyticLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await AnalyticsDailyModel.findOne({ userId, date }).lean();
@@ -71,7 +71,7 @@ export const dailyAnalyticsDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}): Promise<IDailyAnalytics[] | null> => {
+}): Promise<IDailyAnalyticLean[] | null> => {
   try {
     return await AnalyticsDailyModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -95,7 +95,7 @@ export const dailyAnalyticsDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}): Promise<Array<IDailyAnalytics> | null> => {
+}): Promise<Array<IDailyAnalyticLean> | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -200,6 +200,48 @@ export const findDailyAnalyticsDocRange = async ({
           totalFailed: { $arrayElemAt: ["$summary.totalFailed", 0] },
           docCount: { $arrayElemAt: ["$summary.count", 0] },
           data: "$data",
+        },
+      },
+    ]);
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const summaryAnalyticsQuery = async ({
+  userId,
+  endDate,
+  startDate,
+}: {
+  userId: string;
+  endDate: Date;
+  startDate: Date;
+}) => {
+  try {
+    let [result] = await AnalyticsDailyModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Schema.Types.ObjectId(userId),
+          data: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSent: { $sum: "$totalSent" },
+          totalFailed: { $sum: "$totalFaild" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalSent: 1,
+          totalFailed: 1,
         },
       },
     ]);

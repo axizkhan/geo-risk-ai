@@ -1,4 +1,5 @@
-import { dailyApiKeyDocPagination, IDailyApi } from "@repo/db";
+import { dailyApiKeyDocPagination } from "@repo/db";
+import { IDailyApiKeyLean } from "@repo/db/src/models/dashboard/dailyApiKey.model";
 
 export async function dailyApiKeyPagination({
   userId,
@@ -11,7 +12,7 @@ export async function dailyApiKeyPagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyApi> | null;
+  data: Array<IDailyApiKeyLean> | null;
 }> {
   try {
     let skip: number = limit * (page - 1);

@@ -38,7 +38,12 @@ export type IDailyProvider = mongoose.InferSchemaType<
   typeof dailyProviderAnalyticsSchema
 >;
 
-export const DailyProviderAnalyticsModel = mongoose.model<IDailyProvider>(
+export type IDailyProviderDoc = mongoose.HydratedDocument<IDailyProvider>;
+export type IDailyProviderLean = IDailyProvider & {
+  _id: mongoose.Schema.Types.ObjectId;
+};
+
+export const DailyProviderAnalyticsModel = mongoose.model<IDailyProviderLean>(
   "DailyProvider",
   dailyProviderAnalyticsSchema,
 );

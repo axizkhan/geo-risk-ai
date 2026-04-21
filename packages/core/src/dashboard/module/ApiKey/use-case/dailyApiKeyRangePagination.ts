@@ -1,8 +1,5 @@
-import {
-  dailyAnalyticsDocRangePagination,
-  dailyApiKeyDocRangePagination,
-  IDailyAnalytics,
-} from "@repo/db";
+import { dailyApiKeyDocRangePagination, IDailyAnalytics } from "@repo/db";
+import { IDailyApiKeyLean } from "@repo/db/src/models/dashboard/dailyApiKey.model";
 
 export async function dailyApiKeyRangePagination({
   userId,
@@ -19,7 +16,7 @@ export async function dailyApiKeyRangePagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyAnalytics> | null;
+  data: Array<IDailyApiKeyLean> | null;
 }> {
   try {
     let startDateCon = new Date(startDate);

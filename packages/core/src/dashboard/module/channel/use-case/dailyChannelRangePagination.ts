@@ -1,4 +1,5 @@
-import { dailyChannelDocRangePagination, IDailyChannel } from "@repo/db";
+import { dailyChannelDocRangePagination } from "@repo/db";
+import { IDailyChannelLean } from "@repo/db/src/models/dashboard/dailyChannel.model";
 
 export async function dailyChannelRangePagination({
   userId,
@@ -15,7 +16,7 @@ export async function dailyChannelRangePagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyChannel> | null;
+  data: Array<IDailyChannelLean> | null;
 }> {
   try {
     let startDateCon = new Date(startDate);

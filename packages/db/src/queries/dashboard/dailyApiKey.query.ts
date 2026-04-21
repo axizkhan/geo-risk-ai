@@ -1,9 +1,11 @@
 import { ApiKeyAction, ChannelType } from "@repo/shared";
 import {
   DailyApiKeyAnalyticsModel,
-  IDailyApi,
+  IDailyApiKeyLean,
 } from "../../models/dashboard/dailyApiKey.model.js";
 import { FindApiKeyRange } from "../../types/dashboard.types.js";
+import mongoose from "mongoose";
+import { ApiKeyModel } from "../../models/apiKey.model.js";
 
 export const createDailyApiKeyDoc = async ({
   userId,
@@ -34,7 +36,7 @@ export const isDailyApiKeyDocExist = async ({
 }: {
   userId: string;
   apiKeyId: string;
-}): Promise<IDailyApi | null> => {
+}): Promise<IDailyApiKeyLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await DailyApiKeyAnalyticsModel.findOne({
@@ -55,18 +57,21 @@ export const updateDailyApiMatrix = async ({
   isSuccess: boolean;
 }) => {
   try {
-    return await DailyApiKeyAnalyticsModel.updateOne({ _id }, [
-      {
-        $set: {
-          totalSent: {
-            $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
-          },
-          totalFailed: {
-            $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+    return await DailyApiKeyAnalyticsModel.updateOne(
+      { _id: new mongoose.Schema.Types.ObjectId(_id) },
+      [
+        {
+          $set: {
+            totalSent: {
+              $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
+            },
+            totalFailed: {
+              $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+            },
           },
         },
-      },
-    ]);
+      ],
+    );
   } catch (err) {
     throw err;
   }
@@ -74,7 +79,7 @@ export const updateDailyApiMatrix = async ({
 
 export const findDailyApiKeyDoc = async (
   userId: string,
-): Promise<IDailyApi | null> => {
+): Promise<IDailyApiKeyLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await DailyApiKeyAnalyticsModel.findOne({ userId, date }).lean();
@@ -190,7 +195,7 @@ export const dailyApiKeyDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}): Promise<Array<IDailyApi> | null> => {
+}): Promise<Array<IDailyApiKeyLean> | null> => {
   try {
     return await DailyApiKeyAnalyticsModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -214,7 +219,7 @@ export const dailyApiKeyDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}) => {
+}): Promise<Array<IDailyApiKeyLean> | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -225,6 +230,48 @@ export const dailyApiKeyDocRangePagination = async ({
       .skip(skip)
       .limit(limit)
       .lean();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const summaryApiKeyQuery = async ({
+  userId,
+  endDate,
+  startDate,
+}: {
+  userId: string;
+  endDate: Date;
+  startDate: Date;
+}) => {
+  try {
+    let [result] = await ApiKeyModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Schema.Types.ObjectId(userId),
+          data: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSent: { $sum: "$totalSent" },
+          totalFailed: { $sum: "$totalFaild" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalSent: 1,
+          totalFailed: 1,
+        },
+      },
+    ]);
+
+    return result;
   } catch (err) {
     throw err;
   }

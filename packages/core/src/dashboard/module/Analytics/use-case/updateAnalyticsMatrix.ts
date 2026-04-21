@@ -1,18 +1,14 @@
-import { updateDailyAnalyticsMatric, updateDailyChannelMatrix } from "@repo/db";
-import { ChannelType } from "@repo/shared";
+import { updateDailyAnalyticsMatric } from "@repo/db";
 
 export async function updateDailyAnalyticsMatrix({
-  userId,
   id,
   isSuccess,
 }: {
-  userId: string;
-  id: ChannelType;
+  id: string;
   isSuccess: boolean;
 }): Promise<{ success: boolean }> {
   try {
     let result = await updateDailyAnalyticsMatric({
-      userId,
       id,
       isSuccess,
     });

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import * as z from "zod";
+import { IProvider } from "../models/provider.model";
 
 export type MessageStatus = {
   _id: mongoose.Schema.Types.ObjectId;
@@ -16,3 +17,9 @@ export type ProviderName = (typeof PROVIDER_NAMES)[number];
 
 export const channelTypeSchema = z.enum(CHANNEL_TYPES);
 export const providerNameSchema = z.enum(PROVIDER_NAMES);
+
+export type MessagesStatusQuery = IProvider & {
+  provider_name: string;
+  isEnable: boolean;
+  type: ChannelType;
+};

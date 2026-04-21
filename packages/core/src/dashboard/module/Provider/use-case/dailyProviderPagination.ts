@@ -1,4 +1,5 @@
-import { dailyProviderDocPagination, IDailyProvider } from "@repo/db";
+import { dailyProviderDocPagination } from "@repo/db";
+import { IDailyProviderLean } from "@repo/db/src/models/dashboard/dailyProvider.model";
 
 export async function dailyProviderPagination({
   userId,
@@ -11,7 +12,7 @@ export async function dailyProviderPagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyProvider> | null;
+  data: Array<IDailyProviderLean> | null;
 }> {
   try {
     let skip: number = limit * (page - 1);

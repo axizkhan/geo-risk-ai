@@ -6,3 +6,4 @@ export * from "./use-case/findDailyAnalyticsAllDocs.js";
 export * from "./use-case/findDailyAnalyticsDoc.js";
 export * from "./use-case/isDailyAnalyticsExist.js";
 export * from "./use-case/updateAnalyticsMatrix.js";
+export * from "./use-case/summaryAnalytics.js";

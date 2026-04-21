@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import {
   DailyProviderAnalyticsModel,
   IDailyProvider,
+  IDailyProviderLean,
 } from "../../models/dashboard/dailyProvider.model.js";
 import { FindProviderRange } from "../../types/dashboard.types.js";
 
@@ -13,7 +14,10 @@ export const createDailyProviderAnyDoc = async ({
   providerId: string;
 }) => {
   try {
-    return await DailyProviderAnalyticsModel.create({ userId, providerId });
+    return await DailyProviderAnalyticsModel.create({
+      userId: new mongoose.Types.ObjectId(userId),
+      providerId: new mongoose.Types.ObjectId(providerId),
+    });
   } catch (err) {
     throw err;
   }
@@ -25,7 +29,7 @@ export const isDailyProviderExist = async ({
 }: {
   userId: string;
   providerId: string;
-}): Promise<IDailyProvider | null> => {
+}): Promise<IDailyProviderLean | null> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
     return await DailyProviderAnalyticsModel.findOne({
@@ -47,18 +51,21 @@ export const updateDailyProviderMatrix = async ({
 }): Promise<mongoose.UpdateResult> => {
   try {
     let date = new Date(new Date().setHours(0, 0, 0, 0));
-    return await DailyProviderAnalyticsModel.updateOne({ _id }, [
-      {
-        $set: {
-          totalSent: {
-            $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
-          },
-          totalFailed: {
-            $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+    return await DailyProviderAnalyticsModel.updateOne(
+      { _id: new mongoose.Schema.Types.ObjectId(_id) },
+      [
+        {
+          $set: {
+            totalSent: {
+              $cond: [isSuccess, { $add: ["$totalSent", 1] }, "$totalSent"],
+            },
+            totalFailed: {
+              $cond: [isSuccess, "$totalFailed", { $add: ["$totalFailed", 1] }],
+            },
           },
         },
-      },
-    ]);
+      ],
+    );
   } catch (err) {
     throw err;
   }
@@ -83,7 +90,7 @@ export const dailyProviderDocPagination = async ({
   userId: string;
   skip: number;
   limit: number;
-}): Promise<IDailyProvider[] | null> => {
+}): Promise<IDailyProviderLean[] | null> => {
   try {
     return await DailyProviderAnalyticsModel.find({ userId })
       .sort({ createdAt: -1 })
@@ -107,7 +114,7 @@ export const dailyProviderDocRangePagination = async ({
   limit: number;
   startDate: Date;
   endDate: Date;
-}): Promise<IDailyProvider[] | null> => {
+}): Promise<IDailyProviderLean[] | null> => {
   try {
     startDate = new Date(startDate.setHours(0, 0, 0, 0));
     endDate = new Date(endDate.setHours(0, 0, 0, 0));
@@ -212,6 +219,48 @@ export const findDailyProviderDocRange = async ({
           totalFailed: { $arrayElemAt: ["$summary.totalFailed", 0] },
           docCount: { $arrayElemAt: ["$summary.count", 0] },
           data: "$data",
+        },
+      },
+    ]);
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const summaryProviderQuery = async ({
+  userId,
+  endDate,
+  startDate,
+}: {
+  userId: string;
+  endDate: Date;
+  startDate: Date;
+}) => {
+  try {
+    let [result] = await DailyProviderAnalyticsModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Schema.Types.ObjectId(userId),
+          data: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSent: { $sum: "$totalSent" },
+          totalFailed: { $sum: "$totalFaild" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalSent: 1,
+          totalFailed: 1,
         },
       },
     ]);

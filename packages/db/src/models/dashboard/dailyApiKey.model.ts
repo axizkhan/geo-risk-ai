@@ -41,7 +41,12 @@ export type IDailyApi = mongoose.InferSchemaType<
   typeof dailyApiAnalyticsSchema
 >;
 
-export const DailyApiKeyAnalyticsModel = mongoose.model<IDailyApi>(
+export type IDailyApiDoc = mongoose.HydratedDocument<IDailyApi>;
+export type IDailyApiKeyLean = IDailyApi & {
+  _id: mongoose.Schema.Types.ObjectId;
+};
+
+export const DailyApiKeyAnalyticsModel = mongoose.model<IDailyApiKeyLean>(
   "DailyApiKey",
   dailyApiAnalyticsSchema,
 );

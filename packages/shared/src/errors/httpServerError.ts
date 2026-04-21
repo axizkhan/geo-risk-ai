@@ -1,61 +1,123 @@
-export class HttpServerError extends Error {
-  public statusCode: number;
-  public errorMessage: string;
-  public errorType: string;
-  public isOperational: boolean;
-  public errorCode: string;
-  public meta?: Record<string, any>;
+import { ERROR_TYPE, ErrorType } from "../codes/schema.codes";
+import { AppErrorCode, HttpError } from "./appError";
 
-  constructor(
-    statusCode: number,
-    errorMessage: string,
-    errorType: string,
-    errorCode: string,
-    meta?: Record<string, any>,
-  ) {
-    super(errorMessage);
-
-    this.statusCode = statusCode;
-    this.errorMessage = errorMessage;
-    this.errorType = errorType;
-    this.isOperational = true;
-    this.errorCode = errorCode;
-    this.meta = meta;
-
-    Object.setPrototypeOf(this, new.target.prototype);
-    Error.captureStackTrace(this);
+export class HttpServerError extends HttpError {
+  constructor(params: ConstructorParameters<typeof HttpError>[0]) {
+    super(params);
   }
 }
 
 export class InternalServerError extends HttpServerError {
-  constructor(
-    errorMessage: string = "Internal Server Error",
-    errorCode: string,
-  ) {
-    super(500, errorMessage, "INTERNAL_SERVER_ERROR", errorCode);
+  constructor({
+    appCode,
+    errorType,
+    message = "Internel server error",
+    meta,
+  }: {
+    appCode: AppErrorCode;
+    errorType: ErrorType;
+    message?: string;
+    meta?: Record<string, any>;
+  }) {
+    super({
+      appCode,
+      errorType,
+      message,
+      meta,
+      httpCode: "INTERNAL_SERVER_ERROR",
+      statusCode: 500,
+    });
   }
 }
 
 export class NotImplemented extends HttpServerError {
-  constructor(errorMessage: string = "Not Implemented", errorCode: string) {
-    super(501, errorMessage, "NOT_IMPLEMENTED", errorCode);
+  constructor({
+    appCode,
+    errorType,
+    message = "Not Implemented",
+    meta,
+  }: {
+    appCode: AppErrorCode;
+    errorType: ErrorType;
+    message?: string;
+    meta?: Record<string, any>;
+  }) {
+    super({
+      appCode,
+      errorType,
+      message,
+      meta,
+      httpCode: "NOT_IMPLEMENTED",
+      statusCode: 501,
+    });
   }
 }
 
 export class BadGateway extends HttpServerError {
-  constructor(errorMessage: string = "Bad Gateway", errorCode: string) {
-    super(502, errorMessage, "BAD_GATEWAY", errorCode);
+  constructor({
+    appCode,
+    errorType,
+    message = "Bad Gateway",
+    meta,
+  }: {
+    appCode: AppErrorCode;
+    errorType: ErrorType;
+    message?: string;
+    meta?: Record<string, any>;
+  }) {
+    super({
+      appCode,
+      errorType,
+      message,
+      meta,
+      httpCode: "BAD_GATEWAY",
+      statusCode: 502,
+    });
   }
 }
 
 export class ServiceUnavailable extends HttpServerError {
-  constructor(errorMessage: string = "Service Unavailable", errorCode: string) {
-    super(503, errorMessage, "SERVICE_UNAVAILABLE", errorCode);
+  constructor({
+    appCode,
+    errorType,
+    message = "Service Unavailable",
+    meta,
+  }: {
+    appCode: AppErrorCode;
+    errorType: ErrorType;
+    message?: string;
+    meta?: Record<string, any>;
+  }) {
+    super({
+      appCode,
+      errorType,
+      message,
+      meta,
+      httpCode: "SERVICE_UNAVAILABLE",
+      statusCode: 503,
+    });
   }
 }
 
 export class GatewayTimeout extends HttpServerError {
-  constructor(errorMessage: string = "Gateway Timeout", errorCode: string) {
-    super(504, errorMessage, "GATEWAY_TIMEOUT", errorCode);
+  constructor({
+    appCode,
+    errorType,
+    message = "Gateway Timeout",
+    meta,
+  }: {
+    appCode: AppErrorCode;
+    errorType: ErrorType;
+    message?: string;
+    meta?: Record<string, any>;
+  }) {
+    super({
+      appCode,
+      errorType,
+      message,
+      meta,
+      httpCode: "GATEWAY_TIMEOUT",
+      statusCode: 504,
+    });
   }
 }

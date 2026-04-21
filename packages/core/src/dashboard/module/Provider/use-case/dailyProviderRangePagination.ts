@@ -1,9 +1,5 @@
-import {
-  dailyApiKeyDocRangePagination,
-  dailyProviderDocRangePagination,
-  IDailyAnalytics,
-  IDailyProvider,
-} from "@repo/db";
+import { dailyProviderDocRangePagination } from "@repo/db";
+import { IDailyProviderLean } from "@repo/db/src/models/dashboard/dailyProvider.model";
 
 export async function dailyProviderRangePagination({
   userId,
@@ -20,7 +16,7 @@ export async function dailyProviderRangePagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyProvider> | null;
+  data: Array<IDailyProviderLean> | null;
 }> {
   try {
     let startDateCon = new Date(startDate);

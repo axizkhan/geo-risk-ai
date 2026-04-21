@@ -1,8 +1,9 @@
-import { findDailyChannelDoc, IDailyChannel } from "@repo/db";
+import { findDailyChannelDoc } from "@repo/db";
+import { IDailyChannelLean } from "@repo/db/src/models/dashboard/dailyChannel.model";
 
 export async function findDailyChannel(
   userId: string,
-): Promise<{ success: boolean; data: IDailyChannel | null }> {
+): Promise<{ success: boolean; data: IDailyChannelLean | null }> {
   try {
     let result = await findDailyChannelDoc(userId);
     if (!result) {

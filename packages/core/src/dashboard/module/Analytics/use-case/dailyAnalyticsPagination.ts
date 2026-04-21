@@ -1,4 +1,5 @@
 import { dailyAnalyticsDocPagination, IDailyAnalytics } from "@repo/db";
+import { IDailyAnalyticLean } from "@repo/db/src/models/dashboard/dailyAnalytics.model";
 
 export async function dailyAnalyticsPagination({
   userId,
@@ -11,7 +12,7 @@ export async function dailyAnalyticsPagination({
 }): Promise<{
   success: boolean;
   message: string;
-  data: Array<IDailyAnalytics> | null;
+  data: Array<IDailyAnalyticLean> | null;
 }> {
   try {
     let skip: number = limit * (page - 1);
