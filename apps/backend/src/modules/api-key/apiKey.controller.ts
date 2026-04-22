@@ -9,6 +9,8 @@ import {
   apiKeyDeletionService,
   getAllApiKeyService,
 } from "./apiKey.service";
+import { responseSender } from "../../utils/responseSender";
+import { API_KEY_SUCCESS } from "@repo/shared";
 
 export const apiKeyCreationController = async (
   req: Request,
@@ -20,10 +22,18 @@ export const apiKeyCreationController = async (
   const permissions = valNAuthReq.validatedData.body.permissions;
   const userId = valNAuthReq.user.id;
 
-  const result = apiKeyCreationService({ permissions, apiKeyName, userId });
+  const result = await apiKeyCreationService({
+    permissions,
+    apiKeyName,
+    userId,
+  });
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    res,
+    codeObj: API_KEY_SUCCESS.CREATED,
+    success: result.success,
+    data: result.data,
+  });
 };
 
 export const getAllApiKeyController = async (
@@ -35,8 +45,12 @@ export const getAllApiKeyController = async (
   const userId = authReq.user.id;
   const result = await getAllApiKeyService(userId);
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: API_KEY_SUCCESS.FETCHED,
+  });
 };
 
 export const apiKeyDeletionController = async (
@@ -47,7 +61,14 @@ export const apiKeyDeletionController = async (
   const authNValReq = req as ApiKeyDeletionRequest;
   const apiKeyId = authNValReq.validatedData.body.id;
 
-  const result = apiKeyDeletionService(apiKeyId);
+  const result = await apiKeyDeletionService(apiKeyId);
+
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: API_KEY_SUCCESS.DELETED,
+  });
 
   res.status(200);
   res.json(result);

@@ -13,7 +13,7 @@ export async function toggleProvider({
   userId: string;
   providerId: string;
   isActive: boolean;
-}) {
+}): Promise<{ data: null; success: boolean; message: string }> {
   try {
     const providerDocument = await findProviderByProviderIdAndUserId(
       providerId,
@@ -42,12 +42,14 @@ export async function toggleProvider({
       return {
         success: true,
         message: "No change needed (already in desired state)",
+        data: null,
       };
     }
 
     return {
       success: true,
       message: "Provider toggled successfully",
+      data: null,
     };
   } catch (err) {
     throw err;

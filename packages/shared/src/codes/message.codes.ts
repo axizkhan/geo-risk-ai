@@ -4,7 +4,15 @@ export const MESSAGE_ERROR_CODE = {
   INVALID_DATA: "MESSAGE_INVALID_DATA",
 } as const;
 
-export const MESSAGE_SUCCESS_CODE = {
-  CREATED: "MESSAGE_CREATED",
-  FETCHED: "MESSAGE_FETCHED",
+export const MESSAGE_SUCCESS = {
+  CREATED: {
+    code: "MESSAGE_CREATED",
+    httpCode: 201,
+    message: "Message created successfully",
+  },
+  FETCHED: {
+    code: "MESSAGE_FETCHED",
+    httpCode: 200,
+    message: "Messages fetched successfully",
+  },
 } as const;

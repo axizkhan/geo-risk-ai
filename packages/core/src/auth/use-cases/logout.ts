@@ -1,8 +1,12 @@
 import { userTokenVersionIncrement } from "@repo/db";
-import { LogoutDTO, InternalServerError } from "@repo/shared";
+import {
+  LogoutDTO,
+  InternalServerError,
+  LogoutResponseDTO,
+} from "@repo/shared";
 import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 
-export async function logoutUser(data: LogoutDTO): Promise<string> {
+export async function logoutUser(data: LogoutDTO): Promise<LogoutResponseDTO> {
   const { id } = data;
 
   const isTokenVersionInc = await userTokenVersionIncrement(id);
@@ -15,5 +19,5 @@ export async function logoutUser(data: LogoutDTO): Promise<string> {
     });
   }
 
-  return "Logout successfull";
+  return { success: true, data: null };
 }

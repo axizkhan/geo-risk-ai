@@ -1,8 +1,4 @@
-import {
-  FindAnalyticsRangeDoc,
-  findDailyAnalyticsDoc,
-  findDailyChannelDocs,
-} from "@repo/db";
+import { FindAnalyticsRangeDoc, findDailyAnalyticsDoc } from "@repo/db";
 import { FindChannelRangeDoc } from "@repo/db";
 
 export async function findAllDailyAnalyticsDocs({

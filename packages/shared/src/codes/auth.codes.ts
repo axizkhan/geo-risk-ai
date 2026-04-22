@@ -1,8 +1,24 @@
-export const AUTH_SUCCESS_CODE = {
-  LOGIN_SUCCESS: "AUTH_LOGIN_SUCCESS",
-  LOGOUT_SUCCESS: "AUTH_LOGOUT_SUCCESS",
-  EMAIL_VERIFIED: "AUTH_EMAIL_VERIFIED",
-  EMAIL_VERIFICATION_SENT: "AUTH_EMAIL_VERIFICATION_SENT",
+export const AUTH_SUCCESS = {
+  LOGIN_SUCCESS: {
+    code: "AUTH_LOGIN_SUCCESS",
+    httpCode: 200,
+    message: "Login successful",
+  },
+  LOGOUT_SUCCESS: {
+    code: "AUTH_LOGOUT_SUCCESS",
+    httpCode: 200,
+    message: "Logout successful",
+  },
+  EMAIL_VERIFIED: {
+    code: "AUTH_EMAIL_VERIFIED",
+    httpCode: 200,
+    message: "Email verified successfully",
+  },
+  EMAIL_VERIFICATION_SENT: {
+    code: "AUTH_EMAIL_VERIFICATION_SENT",
+    httpCode: 200,
+    message: "Verification email sent successfully",
+  },
 } as const;
 
 export const AUTH_ERROR_CODE = {

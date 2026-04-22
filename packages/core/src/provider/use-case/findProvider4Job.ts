@@ -2,7 +2,7 @@ import { findProviderForJob } from "@repo/db";
 import { ChannelType, NotFound } from "@repo/shared";
 import { PROVIDER_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import mongoose from "mongoose";
-import { IProvider } from "packages/db/src/models/provider.model";
+import { IProvider } from "@repo/db";
 
 export async function findProvider4Job({
   userId,

@@ -12,7 +12,9 @@ import {
   LoginRequestDTO,
   LoginResponseDTO,
   LogoutDTO,
+  LogoutResponseDTO,
 } from "@repo/shared";
+import { success } from "zod";
 import { da } from "zod/v4/locales";
 
 export async function signupService(
@@ -33,6 +35,8 @@ export async function loginService(
   return await loginUser(data);
 }
 
-export async function logoutService(data: LogoutDTO) {
+export async function logoutService(
+  data: LogoutDTO,
+): Promise<LogoutResponseDTO> {
   return await logoutUser(data);
 }

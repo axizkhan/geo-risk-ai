@@ -24,7 +24,7 @@ export function encryptionProviderConfig(
   };
 }
 
-export function decrptProviderConfig(
+export function decrptyProviderConfig(
   configCipher: string,
   ivHex: string,
 ): object {

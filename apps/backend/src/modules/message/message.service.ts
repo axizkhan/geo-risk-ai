@@ -18,9 +18,13 @@ export async function createMessageService({
   reciepent,
   userId,
   content,
-}: CreateMessageService) {
+}: CreateMessageService): Promise<{
+  success: boolean;
+  data: { messageId: string };
+  message: string;
+}> {
   try {
-    const valApiKeyRes = await validateApiKey({
+    await validateApiKey({
       apiToken,
       type,
       channel,
@@ -39,7 +43,7 @@ export async function createMessageService({
     });
     const messageId = newMessageDoc._id.toString();
 
-    const delieveries = await createNewDelievery({
+    await createNewDelievery({
       providerId,
       reciepents: reciepent,
       messageId,
@@ -49,7 +53,11 @@ export async function createMessageService({
     await publishEmail({ messageId, type: channel, userId });
 
     /**and send user success message */
-    return { success: true, message: "emails is queue for job " };
+    return {
+      success: true,
+      message: "emails is queue for job ",
+      data: { messageId },
+    };
   } catch (err) {
     throw err;
   }

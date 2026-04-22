@@ -11,7 +11,9 @@ export const createProviderDoc = async (data: providerCreateDoc) => {
   }
 };
 
-export const getAllUserProvider = async (userId: string) => {
+export const getAllUserProvider = async (
+  userId: string,
+): Promise<IProvider[] | null> => {
   try {
     return await ProviderModel.find({ userId })
       .projection({ config: 0 })

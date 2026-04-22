@@ -7,7 +7,7 @@ import {
 import { encryptionProviderConfig } from "../utils/crypto";
 import { createProviderDoc } from "@repo/db";
 import { HydratedDocument } from "mongoose";
-import { IProvider } from "packages/db/src/models/provider.model";
+import { IProvider } from "@repo/db";
 
 export async function createProvider(
   data: providerCreationDTO,
@@ -42,7 +42,7 @@ export async function createProvider(
     let encrptedProviderConfig = encryptionProviderConfig(config);
 
     let newProviderDoc = await createProviderDoc({
-      userId: "jjkjnje",
+      userId,
       provider_name,
       type,
       config: encrptedProviderConfig,

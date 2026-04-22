@@ -11,6 +11,7 @@ import {
 import { configUpdater } from "../utils/configChecker";
 import { ProviderName } from "@repo/shared";
 import { provideConfigValidator } from "@repo/provider";
+import { success } from "zod";
 
 export async function updateProviderConfig({
   providerId,
@@ -22,7 +23,7 @@ export async function updateProviderConfig({
   config: any;
   provider_name: ProviderName;
   userId: string;
-}) {
+}): Promise<{ success: boolean; data: null }> {
   try {
     let providerDocument = await findProviderByProviderIdAndUserId(
       providerId,
@@ -59,7 +60,7 @@ export async function updateProviderConfig({
       encrptedConfig,
     );
 
-    return "provider config updated successfully";
+    return { success: updateConfig.modifiedCount ? true : false, data: null };
   } catch (err) {
     throw err;
   }

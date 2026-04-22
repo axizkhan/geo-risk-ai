@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { InternalServerError } from "@repo/shared";
+import { AUTH_SUCCESS, InternalServerError } from "@repo/shared";
 import { SYSTEM_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   loginService,
@@ -9,6 +9,8 @@ import {
 } from "./auth.service";
 import { env } from "@repo/shared";
 import { AuthenicatedRequest } from "../../types/authRequest";
+import { responseSender } from "../../utils/responseSender";
+import { success } from "zod";
 
 export const signupController = async (
   req: Request,
@@ -22,8 +24,12 @@ export const signupController = async (
 
     const verifyUrl = `${env.BACKEND_URL}/auth/verify?verifyToken:${result.verifyToken}`;
 
-    res.status(200);
-    res.json({ verifyUrl });
+    return responseSender({
+      res,
+      codeObj: AUTH_SUCCESS.EMAIL_VERIFICATION_SENT,
+      success: true,
+      data: { verifyUrl },
+    });
   }
 
   throw new InternalServerError({
@@ -43,8 +49,12 @@ export const verifyController = async (
 
     const verifyResponseData = await verifyService(data);
 
-    res.status(200);
-    res.json({ verifyResponseData });
+    return responseSender({
+      data: { token: verifyResponseData.token },
+      success: verifyResponseData.success,
+      res,
+      codeObj: AUTH_SUCCESS.EMAIL_VERIFIED,
+    });
   }
 
   throw new InternalServerError({
@@ -64,8 +74,12 @@ export const loginController = async (
 
     const loginResponseData = await loginService(data);
 
-    res.status(200);
-    res.json(loginResponseData);
+    return responseSender({
+      data: { token: loginResponseData.token },
+      success: loginResponseData.success,
+      codeObj: AUTH_SUCCESS.LOGIN_SUCCESS,
+      res,
+    });
   }
 };
 
@@ -78,6 +92,10 @@ export const logoutController = async (
 
   const logOutResponse = await logoutService(data);
 
-  res.status(200);
-  res.json({ message: logOutResponse });
+  return responseSender({
+    success: logOutResponse.success,
+    res,
+    codeObj: AUTH_SUCCESS.LOGOUT_SUCCESS,
+    data: logOutResponse.data,
+  });
 };

@@ -1,8 +1,10 @@
 import { findUserByEmail } from "@repo/db";
 import {
+  InternalServerError,
   LoginRequestDTO,
   LoginResponseDTO,
   NotFound,
+  SYSTEM_ERROR_CODE,
   Unauthorized,
 } from "@repo/shared";
 import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
@@ -33,7 +35,16 @@ export async function loginUser(
     { id: user._id.toString(), email: user.email },
     user.tokenVersion,
   );
+
+  if (!authToken) {
+    throw new InternalServerError({
+      appCode: SYSTEM_ERROR_CODE.INTERNAL_SERVER_ERROR,
+      errorType: ERROR_TYPE.SYSTEM,
+      message: "Internal server error",
+    });
+  }
   return {
     token: authToken,
+    success: true,
   };
 }

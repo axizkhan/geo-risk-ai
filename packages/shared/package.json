@@ -8,7 +8,8 @@
   },
   "types": "src/index.ts",
   "dependencies": {
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "@repo/db": "workspace:*"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10"

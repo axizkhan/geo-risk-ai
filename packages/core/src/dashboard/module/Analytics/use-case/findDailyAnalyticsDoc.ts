@@ -1,4 +1,4 @@
-import { IDailyAnalytics, isUserDailyAnalyticsExist } from "@repo/db";
+import { isUserDailyAnalyticsExist } from "@repo/db";
 import { IDailyAnalyticLean } from "@repo/db/src/models/dashboard/dailyAnalytics.model";
 
 export async function findDailyAnalytics(

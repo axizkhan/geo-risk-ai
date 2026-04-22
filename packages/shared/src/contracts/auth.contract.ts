@@ -11,10 +11,13 @@ type VerifyRequestDTO = z.infer<typeof verifySchema>;
 
 type AuthResponse = {
   token: string;
+  success: boolean;
 };
 
 type VerifyResponseDTO = AuthResponse;
 type LoginResponseDTO = AuthResponse;
+
+export type LogoutResponseDTO = { success: boolean; data: null };
 
 type LogoutDTO = {
   id: string;

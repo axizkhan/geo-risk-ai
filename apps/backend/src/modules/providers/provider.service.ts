@@ -14,11 +14,15 @@ export async function createProviderService(
 ): Promise<ProviderCreateReturnDTO> {
   try {
     const createdProvider = await createProvider(data, userId);
+
     return {
-      _id: createdProvider._id.toString(),
-      provider_name: createdProvider.provider_name,
-      channel: createdProvider.type,
-      userId: createdProvider.userId.toString(),
+      success: true,
+      data: {
+        _id: createdProvider._id.toString(),
+        provider_name: createdProvider.provider_name,
+        channel: createdProvider.type,
+        userId: createdProvider.userId.toString(),
+      },
     };
   } catch (err) {
     throw err;

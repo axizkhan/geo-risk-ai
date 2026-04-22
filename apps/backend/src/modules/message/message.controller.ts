@@ -9,6 +9,8 @@ import {
   getMessageDetailsService,
   getMessageStatusService,
 } from "./message.service";
+import { responseSender } from "../../utils/responseSender";
+import { MESSAGE_SUCCESS } from "@repo/shared";
 
 export const createMessageController = async (
   req: Request,
@@ -29,8 +31,13 @@ export const createMessageController = async (
     content,
     userId,
   });
-  res.status(200);
-  res.json(result);
+
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: MESSAGE_SUCCESS.CREATED,
+  });
 };
 
 export const getMessageDetails = async (
@@ -40,10 +47,14 @@ export const getMessageDetails = async (
 ) => {
   const authNValReq = req as GetMessageRequest;
   const { id } = authNValReq.validatedData.params;
-  const result = getMessageDetailsService(id);
+  const result = await getMessageDetailsService(id);
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: MESSAGE_SUCCESS.FETCHED,
+  });
 };
 
 export const getMessageStatus = async (
@@ -55,8 +66,12 @@ export const getMessageStatus = async (
   const userId = authNValReq.user.id;
   const messageStatus = authNValReq.validatedData.query.status;
 
-  const result = getMessageStatusService({ userId, messageStatus });
+  const result = await getMessageStatusService({ userId, messageStatus });
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: MESSAGE_SUCCESS.FETCHED,
+  });
 };

@@ -31,3 +31,5 @@ export * from "./models/dashboard/index.js";
 
 /**export of types of dashboard doc */
 export * from "./types/dashboard.types.js";
+
+export { IProvider } from "./models/provider.model.js";

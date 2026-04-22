@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Unauthorized } from "@repo/shared";
+import { PROVIDER_SUCCESS, Unauthorized } from "@repo/shared";
 import { AUTH_ERROR_CODE, ERROR_TYPE } from "@repo/shared";
 import {
   DeleteConfigRequest,
@@ -14,6 +14,7 @@ import {
   toggleProviderService,
   updateProviderConfigService,
 } from "./provider.service";
+import { responseSender } from "../../utils/responseSender";
 
 export const providerCreateController = async (
   req: Request,
@@ -34,8 +35,12 @@ export const providerCreateController = async (
 
   const result = await createProviderService(data, user.id);
 
-  res.status(201);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: PROVIDER_SUCCESS.CREATED,
+  });
 };
 
 export const getAllProviderController = async (
@@ -55,8 +60,12 @@ export const getAllProviderController = async (
 
   const result = await getAllProviderService(user.id);
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    res,
+    codeObj: PROVIDER_SUCCESS.CREATED,
+    success: result.success,
+    data: { providers: result.data },
+  });
 };
 
 export const updateProviderConfig = async (
@@ -86,8 +95,12 @@ export const updateProviderConfig = async (
     userId,
   });
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    codeObj: PROVIDER_SUCCESS.UPDATED,
+    res,
+  });
 };
 
 export const toggleProvider = async (
@@ -110,8 +123,12 @@ export const toggleProvider = async (
 
   const result = await toggleProviderService({ userId, providerId, isActive });
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    codeObj: PROVIDER_SUCCESS.UPDATED,
+    res,
+  });
 };
 
 export const deleteProvider = async (
@@ -125,6 +142,10 @@ export const deleteProvider = async (
 
   const result = await deleteProviderService({ userId, providerId });
 
-  res.status(200);
-  res.json(result);
+  return responseSender({
+    data: result.data,
+    success: result.success,
+    res,
+    codeObj: PROVIDER_SUCCESS.DELETED,
+  });
 };

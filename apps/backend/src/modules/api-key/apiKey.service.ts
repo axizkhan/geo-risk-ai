@@ -1,10 +1,13 @@
 import { ApiKeyCreationService } from "@repo/shared";
-import { ApiKeyCreationRequest } from "../../types/authRequest";
+
 import { apiKeyCreation, apiKeyDeletion, getAllApiKey } from "@repo/core";
 
-export async function apiKeyCreationService(data: ApiKeyCreationService) {
+export async function apiKeyCreationService(
+  data: ApiKeyCreationService,
+): Promise<{ success: boolean; data: Record<string, any> }> {
   try {
-    return await apiKeyCreation(data);
+    let result = await apiKeyCreation(data);
+    return { success: result.success, data: { apiKey: result.apiKey } };
   } catch (err) {
     throw err;
   }
@@ -12,13 +15,17 @@ export async function apiKeyCreationService(data: ApiKeyCreationService) {
 
 export async function getAllApiKeyService(userId: string) {
   try {
-    return await getAllApiKey(userId);
-  } catch (err) {}
+    let result = await getAllApiKey(userId);
+    return { success: result.success, data: { apiKeys: result.data } };
+  } catch (err) {
+    throw err;
+  }
 }
 
 export async function apiKeyDeletionService(apiKeyId: string) {
   try {
-    return await apiKeyDeletion(apiKeyId);
+    let result = await apiKeyDeletion(apiKeyId);
+    return { success: result.success, data: null };
   } catch (err) {
     throw err;
   }

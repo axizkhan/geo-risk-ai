@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@repo/db": "workspace:*",
-    "@repo/shared": "workspace:*"
+    "@repo/shared": "workspace:*",
+    "@repo/provider": "workspace:*"
   },
   "types": "src/index.ts",
   "devDependencies": {
